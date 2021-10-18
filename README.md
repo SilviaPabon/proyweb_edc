@@ -1,6 +1,9 @@
 # proyweb_edc
 
-Welcome to proyweb_edc
+WELCOME TO proyweb_edc! 😃
+
+<p align="center"><img alt="Logo" src="https://i.ibb.co/c3bcCWr/android-chrome-512x512.png" width="300px"/></p>
+
 
 ## Overview
 
