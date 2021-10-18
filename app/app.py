@@ -4,11 +4,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html'); 
+    return render_template('index.html');
 
-@app.route('/prueba')
-def prueba():
-    return render_template('/Implementaciones/lista_simple_PC.html'); 
+@app.route('/implementacion/<string:name>')
+def implementacion(name):
+    nombre = name + '.html'
+    return render_template('Implementaciones/' + nombre)
 
 if __name__ == '__main__':
     app.run(debug=True, port=6060)
