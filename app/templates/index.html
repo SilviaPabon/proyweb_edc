@@ -22,42 +22,42 @@
     </div>
     <div class="container cards_container">
         <div class="card-group cards_group">
-            <div class="card"><img class="card-img-top w-100 d-block" src="assets/img/simple_list.jpg">
+            <div class="card"><img class="card-img-top w-100 d-block" src="{{url_for('static', filename='img/simple_list.jpg')}}">
                 <div class="card-body">
                     <h4 class="card-title">LISTA SIMPLEMENTE ENLAZADA SP.</h4><button class="btn btn-primary btn_card" type="button">Button</button>
                 </div>
             </div>
-            <div class="card"><img class="card-img-top w-100 d-block" src="assets/img/simple_list.jpg">
+            <div class="card"><img class="card-img-top w-100 d-block" src="{{url_for('static', filename='img/simple_list.jpg')}}">
                 <div class="card-body">
                     <h4 class="card-title">LISTA SIMPLEMENTE ENLAZADA PC.&nbsp;</h4><button class="btn btn-primary btn_card" type="button">Button</button>
                 </div>
             </div>
-            <div class="card"><img class="card-img-top w-100 d-block" src="assets/img/simple_circular_list.jpg">
+            <div class="card"><img class="card-img-top w-100 d-block" src="{{url_for('static', filename='img/simple_circular_list.jpg')}}">
                 <div class="card-body">
                     <h4 class="card-title">LISTA SIMPLEMENTE ENLAZADA CIRCULAR.</h4><button class="btn btn-primary btn_card" type="button">Button</button>
                 </div>
             </div>
         </div>
         <div class="card-group cards_group">
-            <div class="card"><img class="card-img-top w-100 d-block" src="assets/img/double_list.jpg">
+            <div class="card"><img class="card-img-top w-100 d-block" src="{{url_for('static', filename='img/double_list.jpg')}}">
                 <div class="card-body">
                     <h4 class="card-title">LISTA DOBLEMENTE ENLAZADA</h4><button class="btn btn-primary btn_card" type="button">Button</button>
                 </div>
             </div>
-            <div class="card"><img class="card-img-top w-100 d-block" src="assets/img/double_circular_list.jpg">
+            <div class="card"><img class="card-img-top w-100 d-block" src="{{url_for('static', filename='img/double_circular_list.jpg')}}">
                 <div class="card-body">
                     <h4 class="card-title">LISTA DOBLEMENTE ENLAZADA CIRCULAR</h4><button class="btn btn-primary btn_card" type="button">Button</button>
                 </div>
             </div>
-            <div class="card"><img class="card-img-top w-100 d-block" src="assets/img/cola.jpg">
+            <div class="card"><img class="card-img-top w-100 d-block" src="{{url_for('static', filename='img/cola.jpg')}}">
                 <div class="card-body">
                     <h4 class="card-title">COLA&nbsp;<br>(QUEUE)<br></h4><button class="btn btn-primary btn_card" type="button">Button</button>
                 </div>
             </div>
         </div>
     </div>
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{{url_for('static', filename='scripts/jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='scripts/bootstrap.min.js')}}"></script>
 </body>
 
 </html>
