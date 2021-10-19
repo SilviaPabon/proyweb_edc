@@ -13,7 +13,23 @@
     <center><h1>{% block titulo_2 %}{% endblock %}</h1></center><hr>
     <pre><code class="c">
 {%block structure_code%}{% endblock %}
-    </code></pre>
+    </code></pre><br>
+
+    <!--TABLA DE LAS FUENTES CONSULTADAS-->
+    <h4>FUENTES CONSULTADAS / ÚTILES:</h4>
+    <table class="table table-light table-hover table-striped .table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Enlace</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% block table_content %}{% endblock %}
+        </tbody>
+    </table>
+
 </div>
 
 <script src="{{url_for('static', filename='scripts/syntax/c.min.js')}}"></script>
@@ -21,3 +37,4 @@
 <script src="{{url_for('static', filename='scripts/syntax/highlight.min.js')}}"></script>
 <script>hljs.highlightAll();</script>
 {% endblock %}
+
