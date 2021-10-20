@@ -4,44 +4,95 @@
 
 {% block titulo_1 %}CÓDIGO DEL NODO:{% endblock %}
 {%block node_code%}
+/**
+ * @brief Struct del nodo
+ *
+ * La lista simplemente enlazada se compone de nodos, cuyos atrubutos son:
+ * El dato que almacenan (Límitado a un número/int para este caso),
+ * El puntero al nodo siguiente
+ */
 struct node{
     int data;
     struct node *next;
 };
 
-// ***** Simulación de los getters *****
+/********************************************//**
+ * Simulación de los getters
+ ***********************************************/
 
+/**
+* @brief Una función/método simple para retornar el dato almacenado por un nodo
+* @param NODE el puntero al nodo del que se quiere obtener el dato
+* @return El entero almacenado por el nodo
+*/
 int getData(struct node *NODE){
     return NODE->data;
 }
 
+/**
+ * @brief Una función/método simple para retornar el nodo siguiente a un nodo dado
+ * @param NODE el puntero al nodo del que se quiere obtener su siguiente
+ * @return El puntero al nodo anterior
+ */
 struct node* getNext(struct node *NODE){
     return NODE->next;
 }
 
-// ***** MÉTODOS DE CREACIÓN Y DESTRUCCIÓN *****
+/********************************************//**
+ * Métodos de creación y destrucción
+ ***********************************************/
+
+/**
+ * @brief Método para crear un nodo dado el dato que contendrá
+ * @param data el dato que contendrá el nuevo nodo a crear
+ * @return El puntero al nodo creado
+ */
 struct node* createNode(int data){
-    struct node *new_node = malloc(sizeof(struct node));    //Se reserva el espacio en memoria que abarca la estructura
-    new_node->data = data;
-    new_node->next = NULL;
-    return new_node;    //Se retorna el apuntador al nuevo nodo
+    struct node *new_node = malloc(sizeof(struct node));    /**< Se reserva el espacio de memoria */
+    new_node->data = data;  /**< El dato del nodo será el que se pasó como agumento a la función */
+    new_node->next = NULL;  /**< Por defecto, el puntero al nodo siguiente será nulo */
+    return new_node;
 }
 
-void destroyNode(struct node *NODE){    //Método para eliminar un nodo
-    free(NODE);     //Libera el espacio de memoria que estaba reservado para el nodo
+/**
+ * @brief Método para destruir un nodo
+ * @param NODE puntero del nodo a "destruir"
+ * @return void
+ */
+void destroyNode(struct node *NODE){
+    free(NODE); /**< Se libera el espacio de memoria que ocupaba el nodo */
 }
 
-// ***** Otros métodos *****
+/********************************************//**
+ * Otros métodos
+ ***********************************************/
 
-bool isEqual(struct node *NODE, int DATA) {   //Método para saber si un nodo contiene un dato dado
+/**
+ * @brief Método/función para saber si un nodo específico contiene un dato dado
+ * @param NODE puntero del nodo cuyo dato se va a comparar
+ * @param DATA numero a comparar con el dato del nodo
+ * @return Retorna un booleano dependiendo de si el nodo contiene o no el dato
+ */
+bool isEqual(struct node *NODE, int DATA) {
     return NODE->next == DATA;
 }
 
-void nodeToString(struct node *NODE){        //Método para imprimir los nodos en cadena
-    if(NODE->next != NULL){ //Si tiene un siguiente nodo
+/**
+ * @brief Método para imprimir todos los nodos en cadena
+ *
+ * Se comienza desde un nodo dado (normalmente la cabeza de la lista)
+ * Se imprime el dato contenido por el nodo, seguido de la cadena "Next: ->"
+ * Si sl siguiente nodo no es nulo, se llama recursivamente al método
+ * De lo contrario, junto al "Next: ->" imprime un NULL y no hace ninguna otra llamada recursiva
+ *
+ * @param NODE puntero del nodo desde el que se va a empezar la impresión en consola
+ * @return void
+ */
+void nodeToString(struct node *NODE){
+    if(NODE->next != NULL){ /**< Si tiene siguiente nodo */
         printf("Node: Data %d, Next: ->\n", NODE->data);
-        nodeToString(NODE->next);
-    }else{
+        nodeToString(NODE->next);   /**< Llamada recursiva */
+    }else{  /**< Si no tiene siguiente nodo */
         printf("Node: Data %d, Next: -> NULL", NODE->data);
     }
 }
@@ -49,163 +100,322 @@ void nodeToString(struct node *NODE){        //Método para imprimir los nodos e
 
 {% block titulo_2 %}CÓDIGO DE LA LISTA SIMPLEMENTE ENLAZADA{% endblock %}
 {%block structure_code%}
+/**
+ * @brief Struct de la lista simplemente enlazada
+ *
+ * Una vez implementado lo relacionado al nodo de la lista
+ * se procede a implementar la estructura de la lista
+ * junto con sus métodos/funciones.
+ */
 struct SimpleLinkedList{
-    int size;
-    struct node *head;
-    struct node *tail;
+    int size;   /**< Tamaño de la lista */
+    struct node *head;  /**< Puntero al nodo cabeza (primer nodo de la lista) */
+    struct node *tail;  /**< Puntero al nodo cola (último nodo de la lista) */
 };
 
-// ***** SIMULACIÓN GETTERS *****
+/********************************************//**
+ * Simulación de los getters
+ ***********************************************/
+
+/**
+ * @brief Una función/método simple para retornar el tamaño de una lista dada
+ * @param LIST puntero de la lista de la que se quiere obtener su tamaño
+ * @return el "atributo" tamaño de la lista
+ */
 int getSize(struct SimpleLinkedList *LIST){
     return LIST->size;
 }
 
+/**
+ * @brief Una función/método simple para obtener el primer nodo
+ * @param LIST puntero de la lista de la que se quiere obtener su primer nodo
+ * @return el puntero al primer nodo de la lista
+ */
 struct node* getHead(struct SimpleLinkedList *LIST){
     return LIST->head;
 }
 
+/**
+ * @brief Una función/método simple para obtener el último nodo
+ * @param LIST puntero de la lista de la que se quiere obtener su último nodo
+ * @return el puntero al último nodo de la lista
+ */
 struct node* getTail(struct SimpleLinkedList *LIST){
     return LIST->tail;
 }
 
-bool isEmpty(struct SimpleLinkedList *LIST){     //Método para saber si la lista está vacía
-    return (LIST->head == NULL);    //SI la cabeza es nula, retorna true
+/**
+ * @brief función/método para saber si la lista está vacía
+ *
+ * Si el nodo cabeza es nulo, la lista está vacía, ya que todas las
+ * conexiones de la lista simplemente enlazada empiezan desde la cabeza.
+ * @param LIST puntero de la lista que se quiere revisar para saber si está vacía
+ * @return booleano que indica si la lista está o no vacía
+ */
+bool isEmpty(struct SimpleLinkedList *LIST){
+    return (LIST->head == NULL);     /**< Si la cabeza es nula, retorna true */
 }
 
-// ***** MÉTODOS DE INSERCIÓN ****
-void insertAtHead(struct SimpleLinkedList *LIST, int NEW_DATA){  //Método par insertar un dato al inicio de la lista
+/********************************************//**
+ * Métodos de inserción
+ ***********************************************/
 
-    struct node *NEW_NODE = createNode(NEW_DATA);
+/**
+ * @brief función/método para insertar un dato al inicio de la lista
+ *
+ * Se revisa si la lista está vacía, en ese caso, se crea el nodo y
+ * se asigna como la cabeza y cola de la lista.
+ * Si ya hay nodos en la lista, se crean los respectivos enlaces
+ * por medio de los punteros para agregar el nodo al final
+ *
+ * @param LIST puntero de la lista en la que se quiere insertar el dato
+ * @param NEW_DATA dato que se quiere insertar
+ * @return void
+ */
+void insertAtHead(struct SimpleLinkedList *LIST, int NEW_DATA){
 
-    if(isEmpty(LIST)){   //En caso de que aún no exista ningún elemento en la lista
+    struct node *NEW_NODE = createNode(NEW_DATA);   /**< Nuevo nodo que contiene el dato pasado como argumento */
+
+    if(isEmpty(LIST)){   /**< En caso de que la lista esté vacía */
         LIST->head = NEW_NODE;
-        LIST->tail = LIST->head;    //La cabeza y la cola serán el mismo nodo
-    }else{  //En caso de que ya existan elementos
-        NEW_NODE->next = LIST->head;    //El siguiente nodo al nuevo nodo será la anterior cabeza
-        LIST->head = NEW_NODE;          //El nuevo nodo será la cabeza de la lista
+        LIST->tail = LIST->head;    /**< Como no hay más nodos, la cabeza y cola de la lista son el nuevo nodo */
+    }else{  /**< En caso de que ya existan nodos en la lista */
+        NEW_NODE->next = LIST->head;    /**< El siguiente nodo al nuevo será la actual cabeza de la lista */
+        LIST->head = NEW_NODE;          /**< La cabeza de la lista será el nuevo nodo */
     }
 
-    LIST->size++;   //Al finalizar cualquiera de los casos, se aumenta el size de la lista
+    LIST->size++;  /**< Se aumenta el tamaño de la lista */
 
 }
 
-void insertAtTail(struct SimpleLinkedList *LIST, int NEW_DATA){        //Método por defecto para insertar un elemento en la lista
+/**
+ * @brief función/método para insertar un dato al final de la lista
+ *
+ * Se revisa si la lista está vacía, en ese caso, se crea el nodo y
+ * se asigna como la cabeza y la cola de la lista.
+ * Si ya hay elementos en la lista, se crean los respectivos enlaces
+ * por medio de los punteros para agregar el nodo al final.
+ *
+ * @param LIST puntero de la lista en la que se quiere insertar el dato
+ * @param NEW_DATA dato que se quiere insertar
+ * @return void
+ */
+void insertAtTail(struct SimpleLinkedList *LIST, int NEW_DATA){
 
-    struct node *new_node = createNode(NEW_DATA);
+    struct node *new_node = createNode(NEW_DATA);   /**< Nuevo nodo que contiene el dato pasado como argumento */
 
-    if(isEmpty(LIST)){  //Si la lista está vacía
-        LIST->head = new_node;     //Como no hay más elementos, tanto la cabeza como la cola apuntan al nuevo nodo
-        LIST->tail = LIST->head;
+    if(isEmpty(LIST)){  /**< En caso de que la lista esté vacía */
+        LIST->head = new_node;
+        LIST->tail = LIST->head;    /**< Como no hay más datos, la cabeza y la cola serán los mismos */
+    }else{  /**< En caso de que ya existan elementos dentro de la lista */
+        LIST->tail->next = new_node;   /**< El siguiente a la actual cola será el nuevo nodo */
+        LIST->tail = new_node;         /**< La cola de la lista se actualiza al nuevo nodo */
+    }
+
+    LIST->size++;   /**< Se aumenta el tamaño de la lista */
+
+}
+
+/**
+ * @brief Método por defecto para insertar un dato a la lista
+ *
+ * El comportamiento por defecto del método es llamar al método
+ * insertTail(), para insertar un dato al final de la lista.
+ * Se crea este método para ofrecer un comportamiento predeterminado
+ * y más corto al usuario.
+ *
+ * @param LIST puntero de la lista en la que se quiere insertar el dato
+ * @param NEW_DATA dato que se quiere insertar
+ */
+void insert(struct SimpleLinkedList *LIST, int NEW_DATA){
+    insertAtTail(LIST, NEW_DATA);
+}
+
+/********************************************//**
+ * OTROS MÉTODOS
+ ***********************************************/
+
+/**
+ * @brief Método/función para vaciar la lista.
+ *
+ * El método funciona de manera recursiva, mientas que existan más nodos,
+ * se elimina el actual y se llama al método en función del siguiente.
+ *
+ * Cuando solo quede un nodo, este se elimina,
+ * el puntero a la cabeza de la lista se hace NULL y por último,
+ * se asigna 0 al tamaño de la lista.
+ *
+ * @param LIST puntero de la lista que se quiere anular
+ * @return void
+ */
+void clear(struct SimpleLinkedList *LIST){
+
+    if(LIST->head->next == NULL){   /**< Caso base: Ya no hay más nodos siguientes */
+        free(LIST->head);        /**< Se libera el espacio ocupado por el último nodo */
+        LIST->head = NULL;
+        LIST->size = 0;
+    }else{  /**< Llamada recursiva */
+
+        struct node *current_node = LIST->head;     /**< Nodo para guardar la cabeza de la lista en cada recursión */
+        LIST->head = LIST->head->next;              /**< Se prepara la lista para la siguiente recursión */
+        destroyNode(current_node);  /**< Se destruye la antigua cabeza de la lista */
+        clear(LIST);
+
+    }
+
+}
+
+/**
+ * @brief Método para saber si la lista contiene o no un objeto.
+ *
+ * Se itera la lista en busca del elemento.
+ *
+ * @param LIST puntero de la lista para buscar el elemento
+ * @param this elemento a buscar
+ * @return booleano que indica si el objeto se encontró en la lista
+ */
+bool contains(struct SimpleLinkedList *LIST, int this){
+
+    if(isEmpty(LIST)){
+        return false;   /**< Si la lista está vacía, retorna falso */
     }else{
-        LIST->tail->next = new_node;   //El siguiente nodo a la cola actual es el nuevo nodo
-        LIST->tail = new_node;         //La nueva cola será el nuevo nodo ingresado
-    }
 
-    LIST->size++;   //Al finalizar cualquiera de los casos, se aumenta el size de la lista
+        struct node *current_node = LIST->head;    /**< Nodo para iterar la lista */
+        bool encontrado = false;    /**< Variable para indicar si se encontró el objeto */
 
-}
+        /*
+         * Mientras que exista nodo siguiente y no se haya encontrado el objeto, sigue iterando
+         */
+        while(current_node != NULL){
 
-void insert(struct SimpleLinkedList *LIST, int NEW_DATA){        //Método por defecto para insertar un elemento en la lista
-    insertAtTail(LIST, NEW_DATA);   //Se llama al método para insertar el dato al final de la lista
-}
-
-// ***** Otros métodos *****
-
-void clear(struct SimpleLinkedList *LIST){       //Función para anular la lista
-
-    if(LIST->head->next == NULL){   //Si la lista solo tiene un elemento
-        free(LIST->head);        //Se libera el espacio que estaba ocupando el nodo cabeza
-        LIST->head = NULL;      //El apuntador de la cabeza será nulo (Si no se hace esto por alguna razón se queda iterando infinito)
-        LIST->size = 0; //Al finalizar la recursividad, no queda ningún nodo en la lista
-    }else{  //Si la lista ya tiene elementos
-
-        struct node *current_node = LIST->head;     //Se guarda la cabeza en un apuntador
-        LIST->head = LIST->head->next;              //La cabeza de la lista será el siguiente nodo a la cabeza
-        destroyNode(current_node);  //Se libera el espacio que ocupa la anterior cabeza
-
-        clear(LIST);    //Se llama recursivamente al método
-
-    }
-
-}
-
-bool contains(struct SimpleLinkedList *LIST, int this){   //Método para buscar un dato dentro de la lista
-
-    if(isEmpty(LIST)){  // Caso de que la lista esté vacía (Para evitar errores)
-        return false;
-    }else{
-
-        struct node *current_node = LIST->head;     //Nodo que irá iterando en la lista
-        bool encontrado = false;    //Variable para saber si se encontró el objeto (iniclamente es false).
-
-        while(current_node != NULL){  //Mientras que el nodo actual no sea NULL sigue iterando
-
+            /*
+             * Si se encuenta el objeto, cambia la variable "encontrado" a true
+             * y rompe el cilo.
+             */
             if(current_node->data == this){
-                encontrado = true;  //Cambia el valor de la variable que registra si se encontró el objeto
-                break;  //Rompe el while
-            }
-
-            //Si no se ha encontrado, se sigue iterando
-            current_node = current_node->next;
-
-        }
-
-        return encontrado;  //Finalmente, retorna si lo encontró
-
-    }
-
-}
-
-struct node* search(struct SimpleLinkedList *LIST, int this){   //Método para retornar el nodo que contiene un objeto dado
-
-    if(contains(LIST, this)){ //Se verifica primero que la lista sí contenga el objeto
-        struct node *current_node = LIST->head; //Nodo para iterar la lista
-
-        while(current_node != NULL){  //Mientras que el nodo actual no sea NULL sigue iterando
-
-            if(current_node->data == this){ //Si encuentra el objeto, rompe el ciclo
+                encontrado = true;
                 break;
             }
 
-            //Si no se ha encontrado, se sigue iterando
-            current_node = current_node->next;
+            current_node = current_node->next;  /**< Si no se ha encontrado, se sigue iterando */
 
         }
 
-        return current_node;    //Cuando encuentre el nodo, lo retorna
+        return encontrado;
 
-    }else{  //Si la lista no contiene el objeto, se retorna NULL
+    }
+
+}
+
+/**
+ * @brief Método para retornar el nodo que contiene un objeto dado
+ *
+ * Se verifica que la lista tenga el elemento, mediante el método contains(),
+ * que se implementó anteriormente. De ser cierto, se itera la lista en busca
+ * del elemento y finalmente, se retorna el nodo que lo contiene.
+ *
+ * @param LIST puntero de la lista en la que se quiere buscar el elemento
+ * @param this elemento a buscar en la lista
+ * @return puntero al nodo que contiene el objeto buscado
+ */
+struct node* search(struct SimpleLinkedList *LIST, int this){
+
+    /**
+     * Antes de iterar, se verifica que la lista contiene el objeto,
+     * para evitar iterar en vano.
+     */
+    if(contains(LIST, this)){
+        struct node *current_node = LIST->head;     /**< Nodo para iterar la lista */
+
+        /**
+         * Mientras que no se haya llegado al final de la lista
+         * y no se haya encontrado el elemento, se sigue iterando.
+         */
+        while(current_node != NULL){
+
+            if(current_node->data == this){  /**< Cuando se encuentre el nodo, se deja de iterar */
+                break;
+            }
+
+            current_node = current_node->next;  /**< Si no se ha encontrado, se sigue iterando */
+
+        }
+
+        /*
+         * Finalmente, retorna el nodo que contiene el objeto,
+         * sabemos con seguridad que se retornará un nodo, ya que
+         * anteriormente se verificó que la lista contenía el elemento.
+         */
+        return current_node;
+
+    }else{   /**< Si el contains() arroja false, se retorna NULL */
         return NULL;
     }
 }
 
-bool remove_element(struct SimpleLinkedList *LIST, int this){   //Método para eliminar el nodo que contiene un objeto dado
+/**
+ * @brief método/función para eliminar un objeto en la lista
+ *
+ * Se valida que la lista no esté vacía y contenga el elemento,
+ * luego, se itera la lista en busca del elemento, por medio de
+ * nodos auxiliares que permitirán cambiar los punteros para así,
+ * eliminar el nodo de la lista.
+ *
+ * @param LIST puntero de la lista en la que se quiere retornar un elemento
+ * @param this elemento a eliminar
+ * @return booleano que indica si se pudo eliminar con éxito el elemento
+ * @note Se deben evaluar casos especiales al momento de eliminar el nodo (ejm. cabeza y cola).
+ */
+bool remove_element(struct SimpleLinkedList *LIST, int this){
 
-    if(isEmpty(LIST)){  //Si la lista está vacía
+    if(isEmpty(LIST)){  /**< Si la lista está vacía */
         return false;
-    }else if(contains(LIST, this) == false){    //Si la lista no contiene el objeto
+    }else if(contains(LIST, this) == false){    /**< Si la lista no contiene el elemento */
+        printf("El dato %d no existe en la lista\n", this);
         return false;
-    }else{  //En caso de que la lista NO ESTÉ VACÍA y SÍ CONTENGA EL OBJETO
+    }else{
 
-        struct node *current_node = LIST->head;     //Nodo para iterar la lista
-        struct node *before_node = NULL;    //Nodo auxiliar para poder "soltar" los enlaces
+        /*
+         * Nodos para iterar la lista en búsca del elemento y
+         * cambiar los enlaces de los punteros.
+         */
+        struct node *current_node = LIST->head;
+        struct node *before_node = NULL;
 
-        while(current_node != NULL){    //Mientras que no llegue al final de la lista
+        /*
+         * Sigue iterando mientras que no se llegue al final de la lista
+         * y hasta que se encuentre nodo a eliminar.
+         */
+        while(current_node != NULL){
 
-            if(current_node->data == this){
-                if(current_node == LIST->head){   //Si el nodo que contiene el objeto es la cabeza de la lista
-                    LIST->head = LIST->head->next;  //La nueva cabeza será el nodo que estaba después de la anterior cabeza
+            if(current_node->data == this){ /**< Cuando se encuentre el nodo buscado */
+                if(current_node == LIST->head){
+                    /*
+                     * Si el nodo a eliminar es la cabeza de la lista,
+                     * la nueva cabeza será el nodo que está después de
+                     * la actual cabeza.
+                     */
+                    LIST->head = LIST->head->next;
                 }
-                else{   //En caso de que el nodo no sea la cabeza
+                else{
+                    /*
+                     * En caso de que sea un nodo diferente a la cabeza,
+                     * se usa el auxiliar "before_node" para cambiar el puntero
+                     * del nodo anterior, de modo que el siguiente nodo al anterior
+                     * del nodo que se va a eliminar será el siguiente nodo del que
+                     * se va a eliminar, de este modo:
+                     *
+                     * A -> Eliminar -> C se pasa a: A -> C
+                     */
                     before_node->next = current_node->next;
                 }
 
-                destroyNode(current_node);  //Al finalizar cualquiera de los casos, libera la memoria del nodo eliminado
-                LIST->size--;   //Disminuye el size de la lista
-                break;  //Rompe el cilclo para dejar de iterar
+                destroyNode(current_node);  /**< Al finalizar, se libera el espacio del nodo eliminado */
+                LIST->size--;   /**< Se disminuye el tamaño de la lista en 1 */
+                break;  /**< Rompe el ciclo para dejar de iterar */
             }
 
-            //Si no lo ha encontrado, sigue iterando
+            /**< Si aún no se ha encontrado el nodo, se sigue iterando */
             before_node = current_node;
             current_node = current_node->next;
 
@@ -217,35 +427,80 @@ bool remove_element(struct SimpleLinkedList *LIST, int this){   //Método para e
 
 }
 
-void reverse(struct SimpleLinkedList *LIST, struct SimpleLinkedList *HERE){ //Se pasa la lista a revertir y la lista donde se guardará el resultado
+/**
+ * @brief función/método para "voltear" la lista
+ *
+ * Se itera la lista "LIST" y sus elementos se van insertando
+ * en la lista "HERE", mediante el método insertAtHead(), de modo que
+ * los primeros elementos insertados van quedando al final de la lista.
+ *
+ * Ejemplo: Si los elementos de "LIST" son: 0 1 2, la inserción en "HERE" sería:
+ * 0 paso 1
+ * 1 - 0 paso 2
+ * 2 - 1 -0 paso 3
+ *
+ * @param LIST puntero de la lista a revertir
+ * @param HERE puntero de la lista en la que se guardará el resultado
+ * @note HERE y LIST deben ser dos punteros diferentes.
+ */
+void reverse(struct SimpleLinkedList *LIST, struct SimpleLinkedList *HERE){
 
-    struct node *current = LIST->head;   //Nodo para iterar la lista original
+    struct node *current = LIST->head;   /**< Nodo para iterar la lista inicial */
 
-    while(current != NULL){ //Se van guardando los datos en la otra lista, pero insertándolos siempre en la cabeza
+    while(current != NULL){
         insertAtHead(HERE, current->data);
         current = current->next;
     }
 
 }
 
+/**
+ * @brief función/método para guardar los elementos de la lista en un array.
+ *
+ * Esta opción permite guardar los elementos en un array,
+ * comenzando por el dato de la cabeza y terminando por el dato de la
+ * cola.
+ *
+ * @code
+ * int my_array[my_list.size];
+ * toArray(&my_list, &my_array);
+ * for(int i=0; i<my_list.size; i++){
+ *      printf("\nEl valor del array en la posición %d , es: %d", i, my_array[i]);
+ * }
+ * @endcode
+ * @param LIST puntero de la lista que se va a convertir en array
+ * @param ARRAY puntero al array en el que se guardarán los datos
+ */
 void toArray(struct SimpleLinkedList *LIST, int* ARRAY){
 
-    int index = 0;
-    struct node *current = LIST->head;  //Nodo para iterar la lista
+    int index = 0;  /**< Contador para insertar los datos en el array */
+    struct node *current = LIST->head;   /**< Nodo para iterar la lista */
 
     while(current != NULL){
-        ARRAY[index] = current->data;
-        current = current->next;
-        index++;
+        ARRAY[index] = current->data;   /**< Se insertar el dato actual en el array */
+        current = current->next;    /**< Se cambia el nodo actual */
+        index++;    /**< Se aumenta el contador para insertar en la siguiente posición */
     }
 
 }
 
-void listToString(struct SimpleLinkedList *LIST){    //Método para imprimir toda la lista
-    if(isEmpty(LIST)){  //Si la lista está vacía
+/**
+ * @brief Método para imprimir la lista
+ *
+ * Este método permite imprimir todos los nodos que conforman
+ * la lista, comenzando desde la cabeza, terminando en la cola.
+ *
+ * El funcionamiento es básico, se verifica que la lista no esté vacía
+ * y se llama al método nodeToString(), que se implementó anteriormente
+ * pasando como argumento el primer nodo de la lista.
+ *
+ * @param LIST puntero de la lista que se quiere imprimir
+ */
+void listToString(struct SimpleLinkedList *LIST){
+    if(isEmpty(LIST)){
         printf("La lista está vacía");
     }else{
-        nodeToString(LIST->head);   //Se llama al método ToString() de la cabeza de la cola
+        nodeToString(LIST->head);
     }
 }
 {% endblock %}
@@ -285,5 +540,10 @@ void listToString(struct SimpleLinkedList *LIST){    //Método para imprimir tod
     <th scope="row">7</th>
     <td>Memoria dinámica en C: Malloc y Free</td>
     <td>http://labsopa.dis.ulpgc.es/fso/cpp/intro_c/introc75.htm</td>
+</tr>
+<tr>
+    <th scope="row">8</th>
+    <td>Doxygen usage manual</td>
+    <td>http://fnch.users.sourceforge.net/doxygen_c.html</td>
 </tr>
 {% endblock %}
