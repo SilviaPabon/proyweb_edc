@@ -16,9 +16,9 @@ struct node{
     struct node *next;
 };
 
-/********************************************//**
- * Simulación de los getters
- ***********************************************/
+// *********************************
+// Simulación de los getters
+// *********************************
 
 /**
 * @brief Una función/método simple para retornar el dato almacenado por un nodo
@@ -38,9 +38,9 @@ struct node* getNext(struct node *NODE){
     return NODE->next;
 }
 
-/********************************************//**
- * Métodos de creación y destrucción
- ***********************************************/
+// *********************************
+// Métodos de creación y destrucción
+// *********************************
 
 /**
  * @brief Método para crear un nodo dado el dato que contendrá
@@ -63,9 +63,9 @@ void destroyNode(struct node *NODE){
     free(NODE); // Se libera el espacio de memoria que ocupaba el nodo
 }
 
-/********************************************//**
- * Otros métodos
- ***********************************************/
+// *********************************
+// Otros métodos
+// *********************************
 
 /**
  * @brief Método/función para saber si un nodo específico contiene un dato dado
@@ -113,9 +113,9 @@ struct SimpleLinkedList{
     struct node *tail;  /**< Puntero al nodo cola (último nodo de la lista) */
 };
 
-/********************************************//**
- * Simulación de los getters
- ***********************************************/
+// *********************************
+// Simulación de los getters
+// *********************************
 
 /**
  * @brief Una función/método simple para retornar el tamaño de una lista dada
@@ -156,9 +156,9 @@ bool isEmpty(struct SimpleLinkedList *LIST){
     return (LIST->head == NULL);     // Si la cabeza es nula, retorna true
 }
 
-/********************************************//**
- * Métodos de inserción
- ***********************************************/
+// *********************************
+// Métodos de inserción
+// *********************************
 
 /**
  * @brief función/método para insertar un dato al inicio de la lista
@@ -231,9 +231,9 @@ void insert(struct SimpleLinkedList *LIST, int NEW_DATA){
     insertAtTail(LIST, NEW_DATA);
 }
 
-/********************************************//**
- * OTROS MÉTODOS
- ***********************************************/
+// *********************************
+// Otros métodos
+// *********************************
 
 /**
  * @brief Método/función para vaciar la lista.
