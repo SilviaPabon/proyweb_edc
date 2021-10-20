@@ -17,9 +17,9 @@ struct node{
     struct node *next;      /**< Puntero al siguiente nodo */
 };
 
-/********************************************//**
- * Simulación de los getters
- ***********************************************/
+// *********************************
+// Simulación de los getters
+// *********************************
 
 /**
  * @brief Una función/método simple para retornar el dato almacenado por un nodo
@@ -48,9 +48,9 @@ struct node* getNext(struct node *NODE){
     return NODE->next;
 }
 
-/********************************************//**
- * Métodos de creación y destrucción
- ***********************************************/
+// *********************************
+// Métodos de creación y destrucción
+// *********************************
 
 /**
  * @brief Método para crear un nodo dado el dato que contendrá
@@ -58,10 +58,10 @@ struct node* getNext(struct node *NODE){
  * @return El puntero al nodo creado
  */
 struct node* createNode(int data){
-    struct node *new_node = malloc(sizeof(struct node));    /**< Se reserva el espacio de memoria */
-    new_node->data = data;  /**< El dato del nodo será el que se pasó como agumento a la función */
-    new_node->previous = NULL;  /**< Por defecto, el puntero al nodo anterior será nulo */
-    new_node->next = NULL;  /**< Por defecto, el puntero al nodo siguiente será nulo */
+    struct node *new_node = malloc(sizeof(struct node));    // Se reserva el espacio de memoria
+    new_node->data = data;  // El dato del nodo será el que se pasó como agumento a la función
+    new_node->previous = NULL;  // Por defecto, el puntero al nodo anterior será nulo
+    new_node->next = NULL;  // Por defecto, el puntero al nodo siguiente será nulo
     return new_node;
 }
 
@@ -71,12 +71,12 @@ struct node* createNode(int data){
  * @return void
  */
 void destroyNode(struct node *NODE){
-    free(NODE);    /**< Se libera el espacio de memoria que ocupaba el nodo */
+    free(NODE);    // Se libera el espacio de memoria que ocupaba el nodo
 }
 
-/********************************************//**
- * Otros métodos
- ***********************************************/
+// *********************************
+// Otros métodos
+// *********************************
 
 /**
  * @brief Método/función para saber si un nodo específico contiene un dato dado
@@ -100,10 +100,10 @@ bool isEqual(struct node *NODE, int DATA) {
  * @return void
  */
 void nodeToString_ahead(struct node *NODE){
-    if(NODE->next != NULL){    /**< Si tiene siguiente nodo */
+    if(NODE->next != NULL){    // Si tiene siguiente nodo
         printf("Node: Data %d, Next: ->\n", NODE->data);
-        nodeToString_ahead(NODE->next); /**< Llamada recursiva */
-    }else{  /**< Si no tiene siguiente nodo */
+        nodeToString_ahead(NODE->next); // Llamada recursiva
+    }else{  // Si no tiene siguiente nodo
         printf("Node: Data %d, Next: -> NULL", NODE->data);
     }
 }
@@ -119,10 +119,10 @@ void nodeToString_ahead(struct node *NODE){
  * @return void
  */
 void nodeToString_backward(struct node *NODE){
-    if(NODE->previous != NULL){ /**< Si tiene anterior nodo */
+    if(NODE->previous != NULL){ // Si tiene anterior nodo
         printf("Node: Data %d, Previous: ->\n", NODE->data);
-        nodeToString_backward(NODE->previous);  /**< Llamada recursiva */
-    }else{  /**< Si no tiene anterior nodo */
+        nodeToString_backward(NODE->previous);  // Llamada recursiva
+    }else{  // Si no tiene anterior nodo
         printf("Node: Data %d, Previous: -> NULL", NODE->data);
     }
 }
@@ -143,9 +143,9 @@ struct DoubleLinkedList{
     struct node *tail;  /**< Puntero al nodo cola (último nodo de la lista) */
 };
 
-/********************************************//**
- * Simulación de los getters
- ***********************************************/
+// *********************************
+// Simulacion de los getters
+// *********************************
 
 /**
  * @brief Una función/método simple para retornar el tamaño de una lista dada
@@ -174,9 +174,9 @@ struct node* getTail(struct DoubleLinkedList *LIST){
     return LIST->tail;
 }
 
-/********************************************//**
- * Métodos de inserción
- ***********************************************/
+// *********************************
+// Métodos de inserción
+// *********************************
 
 /**
  * @brief función/método para saber si la lista está vacía
@@ -187,7 +187,7 @@ struct node* getTail(struct DoubleLinkedList *LIST){
  * @return booleano que indica si la lista está o no vacía
  */
 bool isEmpty(struct DoubleLinkedList *LIST){
-    return LIST->head == NULL;  /**< Si la cabeza es nula, retorna true */
+    return LIST->head == NULL;  // Si la cabeza es nula, retorna true
 }
 
 /**
@@ -204,18 +204,18 @@ bool isEmpty(struct DoubleLinkedList *LIST){
  */
 void insertTail(struct DoubleLinkedList *LIST, int data){
 
-    struct node *new_node = createNode(data);   /**< Nuevo nodo que contiene el dato pasado como argumento */
+    struct node *new_node = createNode(data);   // Nuevo nodo que contiene el dato pasado como argumento
 
-    if(isEmpty(LIST)){ /**< En caso de que la lista esté vacía */
+    if(isEmpty(LIST)){ // En caso de que la lista esté vacía
         LIST->head = new_node;
-        LIST->tail = LIST->head;    /**< Como no hay más datos, la cabeza y la cola serán los mismos */
-    }else{ /**< En caso de que ya existan elementos dentro de la lista */
-        new_node->previous = LIST->tail;   /**< El anterior al nuevo nodo será la actual cola de la lista */
-        LIST->tail->next = new_node;    /**< El siguiente a la actual cola será el nuevo nodo */
-        LIST->tail = new_node;  /**< La cola de la lista se actualiza al nuevo nodo */
+        LIST->tail = LIST->head;    // Como no hay más datos, la cabeza y la cola serán los mismos
+    }else{ // En caso de que ya existan elementos dentro de la lista
+        new_node->previous = LIST->tail;   // El anterior al nuevo nodo será la actual cola de la lista
+        LIST->tail->next = new_node;    // El siguiente a la actual cola será el nuevo nodo
+        LIST->tail = new_node;  // La cola de la lista se actualiza al nuevo nodo
     }
 
-    LIST->size++;   /**< Se aumenta el tamaño de la lista */
+    LIST->size++;   // Se aumenta el tamaño de la lista
 }
 
 /**
@@ -232,18 +232,18 @@ void insertTail(struct DoubleLinkedList *LIST, int data){
  */
 void insertHead(struct DoubleLinkedList *LIST, int data){
 
-    struct node *new_node = createNode(data);   /**< Nuevo nodo que contiene el dato pasado como argumento */
+    struct node *new_node = createNode(data);   // Nuevo nodo que contiene el dato pasado como argumento
 
-    if(isEmpty(LIST)){  /**< En caso de que la lista esté vacía */
+    if(isEmpty(LIST)){  // En caso de que la lista esté vacía
         LIST->head = new_node;
-        LIST->tail = LIST->head;    /**< Como no hay más nodos, la cabeza y cola de la lista son el nuevo nodo */
-    }else{  /**< En caso de que ya existan nodos en la lista */
-        new_node->next = LIST->head;    /**< El siguiente nodo al nuevo será la actual cabeza de la lista */
-        LIST->head->previous = new_node;    /**< El anterior nodo a la actual cabeza será el nuevo nodo */
-        LIST->head = new_node;  /**< La cabeza de la lista será el nuevo nodo */
+        LIST->tail = LIST->head;    // Como no hay más nodos, la cabeza y cola de la lista son el nuevo nodo
+    }else{  // En caso de que ya existan nodos en la lista
+        new_node->next = LIST->head;    // El siguiente nodo al nuevo será la actual cabeza de la lista
+        LIST->head->previous = new_node;    // El anterior nodo a la actual cabeza será el nuevo nodo
+        LIST->head = new_node;  // La cabeza de la lista será el nuevo nodo
     }
 
-    LIST->size++;   /**< Se aumenta el tamaño de la lista */
+    LIST->size++;   // Se aumenta el tamaño de la lista
 
 }
 
@@ -262,9 +262,10 @@ void insert(struct DoubleLinkedList *LIST, int data){
     insertTail(LIST, data);
 }
 
-/********************************************//**
- * Métodos para imprimir la lista
- ***********************************************/
+// *********************************
+// Métodos para imprimir la lista
+// *********************************
+
  /**
   * @brief Método para imprimir la lista "al derecho"
   *
@@ -305,9 +306,9 @@ void listToString_backward(struct DoubleLinkedList *LIST){
     }
 }
 
-/********************************************//**
- * Otros métodos
- ***********************************************/
+// *********************************
+// Otros métodos
+// *********************************
 
 /**
  * @brief Método/función para vaciar la lista.
@@ -324,15 +325,15 @@ void listToString_backward(struct DoubleLinkedList *LIST){
  */
 void clear(struct DoubleLinkedList *LIST){
 
-    if(LIST->head->next == NULL){   /**< Caso base: Ya no hay más nodos siguientes */
-        free(LIST->head);   /**< Se libera el espacio ocupado por el último nodo */
+    if(LIST->head->next == NULL){   // Caso base: Ya no hay más nodos siguientes
+        free(LIST->head);   // Se libera el espacio ocupado por el último nodo
         LIST->head = NULL;
         LIST->size = 0;
-    }else{  /**< Llamada recursiva */
+    }else{  // Llamada recursiva
 
-        struct node *current_node = LIST->head; /**< Nodo para guardar la cabeza de la lista en cada recursión */
-        LIST->head = LIST->head->next;  /**< Se prepara la lista para la siguiente recursión */
-        destroyNode(current_node);  /**< Se destruye la antigua cabeza de la lista */
+        struct node *current_node = LIST->head; // Nodo para guardar la cabeza de la lista en cada recursión
+        LIST->head = LIST->head->next;  // Se prepara la lista para la siguiente recursión
+        destroyNode(current_node);  // Se destruye la antigua cabeza de la lista
         clear(LIST);
 
     }
@@ -351,11 +352,11 @@ void clear(struct DoubleLinkedList *LIST){
 bool contains(struct DoubleLinkedList *LIST, int this){
 
     if(isEmpty(LIST)){
-        return false;   /**< Si la lista está vacía, retorna falso */
+        return false;   // Si la lista está vacía, retorna falso
     }else{
 
-        struct node *current_node = LIST->head; /**< Nodo para iterar la lista */
-        bool encontrado = false; /**< Variable para indicar si se encontró el objeto */
+        struct node *current_node = LIST->head; // Nodo para iterar la lista
+        bool encontrado = false; // Variable para indicar si se encontró el objeto
 
         /*
          * Mientras que exista nodo siguiente y no se haya encontrado el objeto, sigue iterando
@@ -371,7 +372,7 @@ bool contains(struct DoubleLinkedList *LIST, int this){
                 break;
             }
 
-            current_node = current_node->next;  /**< Si no se ha encontrado, se sigue iterando */
+            current_node = current_node->next;  // Si no se ha encontrado, se sigue iterando
 
         }
 
@@ -411,7 +412,7 @@ struct node* search(struct DoubleLinkedList *LIST, int this){
      */
     if(contains(LIST, this)){
 
-        struct node *current = LIST->head;  /**< Nodo para iterar la lista */
+        struct node *current = LIST->head;  // Nodo para iterar la lista
 
         /**
          * Mientras que no se haya llegado al final de la lista
@@ -419,11 +420,11 @@ struct node* search(struct DoubleLinkedList *LIST, int this){
          */
         while(current != NULL){
 
-            if(current->data = this){   /**< Cuando se encuentre el nodo, se deja de iterar */
+            if(current->data = this){   // Cuando se encuentre el nodo, se deja de iterar
                 break;
             }
 
-            current = current->next;    /**< Si no se ha encontrado, se sigue iterando */
+            current = current->next;    // Si no se ha encontrado, se sigue iterando
 
         }
 
@@ -444,7 +445,7 @@ struct node* search(struct DoubleLinkedList *LIST, int this){
             current = current->previous;
         }*/
 
-    }else{  /**< Si el contains() arroja false, se retorna NULL */
+    }else{  // Si el contains() arroja false, se retorna NULL
         return NULL;
     }
 
@@ -465,9 +466,9 @@ struct node* search(struct DoubleLinkedList *LIST, int this){
  */
 bool remove_element(struct DoubleLinkedList *LIST, int this){
 
-    if(isEmpty(LIST)){  /**< Si la lista está vacía */
+    if(isEmpty(LIST)){  // Si la lista está vacía
         return false;
-    }else if(contains(LIST, this) == false){     /**< Si la lista no contiene el elemento */
+    }else if(contains(LIST, this) == false){     // Si la lista no contiene el elemento
         printf("El dato %d no existe en la lista\n", this);
         return false;
     }else{
@@ -486,7 +487,7 @@ bool remove_element(struct DoubleLinkedList *LIST, int this){
          */
         while(current != NULL){
 
-            if(current->data == this){  /**< Cuando se encuentre el nodo buscado */
+            if(current->data == this){  // Cuando se encuentre el nodo buscado
 
                 if(current == LIST->head){
                     /*
@@ -528,10 +529,10 @@ bool remove_element(struct DoubleLinkedList *LIST, int this){
 
                 }
 
-                break; /**< Se rompe el ciclo para dejar de iterar */
+                break; // Se rompe el ciclo para dejar de iterar
             }
 
-            /**< Si aún no se ha encontrado el nodo, se sigue iterando */
+            // Si aún no se ha encontrado el nodo, se sigue iterando
             previous = current;
             current = next;
             if(next != NULL){
@@ -540,8 +541,8 @@ bool remove_element(struct DoubleLinkedList *LIST, int this){
 
         }
 
-        destroyNode(current);   /**< Al finalizar, se libera el espacio del nodo eliminado */
-        LIST->size--;   /**< Se disminuye el tamaño de la lista en 1 */
+        destroyNode(current);   // Al finalizar, se libera el espacio del nodo eliminado
+        LIST->size--;   // Se disminuye el tamaño de la lista en 1
         return  true;
 
     }
@@ -566,7 +567,7 @@ bool remove_element(struct DoubleLinkedList *LIST, int this){
  */
 void reverse(struct DoubleLinkedList *LIST, struct DoubleLinkedList *HERE){
 
-    struct node *current = LIST->head;   /**< Nodo para iterar la lista inicial */
+    struct node *current = LIST->head;   // Nodo para iterar la lista inicial
 
     while(current != NULL){
         insertHead(HERE, current->data);
@@ -594,13 +595,13 @@ void reverse(struct DoubleLinkedList *LIST, struct DoubleLinkedList *HERE){
  */
 void toArrayAhead(struct DoubleLinkedList *LIST, int* ARRAY){
 
-    int index = 0;   /**< Contador para insertar los datos en el array */
-    struct node *current = LIST->head;   /**< Nodo para iterar la lista */
+    int index = 0;   // Contador para insertar los datos en el array
+    struct node *current = LIST->head;   // Nodo para iterar la lista
 
     while(current != NULL){
-        ARRAY[index] = current->data;    /**< Se insertar el dato actual en el array */
-        current = current->next;     /**< Se cambia el nodo actual */
-        index++;     /**< Se aumenta el contador para insertar en la siguiente posición */
+        ARRAY[index] = current->data;    // Se inserta el dato actual en el array
+        current = current->next;     // Se cambia el nodo actual
+        index++;     // Se aumenta el contador para insertar en la siguiente posición
     }
 
 }
@@ -625,13 +626,13 @@ void toArrayAhead(struct DoubleLinkedList *LIST, int* ARRAY){
  */
 void toArrayBackward(struct DoubleLinkedList *LIST, int* ARRAY){
 
-    int index = 0;  /**< Contador para insertar los datos en el array */
-    struct node *current = LIST->tail;  /**< Nodo para iterar la lista */
+    int index = 0;  // Contador para insertar los datos en el array
+    struct node *current = LIST->tail;  // Nodo para iterar la lista
 
     while(current != NULL){
-        ARRAY[index] = current->data;   /**< Se insertar el dato actual en el array */
-        current = current->previous;    /**< Se cambia el nodo actual */
-        index++;    /**< Se aumenta el contador para insertar en la siguiente posición */
+        ARRAY[index] = current->data;   // Se insertar el dato actual en el array
+        current = current->previous;    // Se cambia el nodo actual
+        index++;    // Se aumenta el contador para insertar en la siguiente posición
     }
 
 }
