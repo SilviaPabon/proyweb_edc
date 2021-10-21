@@ -217,6 +217,69 @@ void insertAtTail(struct SimpleLinkedList *LIST, int NEW_DATA){
 }
 
 /**
+ * @brief Método para insertar un dato en una posición específica.
+ *
+ * Si la posición ingresada es 0, se inserta en la cabeza.
+ * Si la posición ingresada es el size de la lista +1, se inserta en la cola.
+ * Si la posición es diferente a las anteriores, se itera la lista "position" veces
+ * para encontrar la posición deseada, y se hacen los cambios en los punteros para
+ * insertar el nodo.
+ *
+ * @param LIST puntero de la lista en la que se quiere insertar el dato
+ * @param data dato que se va a insertar en la lista
+ * @param position posición en la que se quiere insertar el dato
+ * @note El argumento position puede empezar en 0, donde 0 significaría insertar en la
+ * cabeza de la lista.
+ */
+void insertAt(struct SimpleLinkedList *LIST, int data, int position){
+    if(position == 0){
+        insertAtHead(LIST, data);
+    }else if(position == LIST->size +1){
+        insertAtTail(LIST, data);
+    }else{
+
+        /*
+         * Antes de iterar, se valida que la posicíón ingersada sea válida.
+         * (No puede ser mayor al size de la lista +1.
+         */
+
+        if(position > LIST->size+1){
+            printf("La posición ingresada no es válida. El valor máximo permidido es el size de la lista +1");
+        }else{
+            struct node *new_node = createNode(data);   //Nodo que contiene el nuevo dato
+
+            /*
+             * Nodos para iterar la lista
+             */
+            struct node *previous = NULL;
+            struct node *current = LIST->head;
+
+            /*
+             * Se itera hasta llegar al nodo de la posición indicada
+             */
+            for(int i=1; i<position; i++){
+                previous = current;
+                current = current->next;
+            }
+
+            /*
+             * El siguiente al nuevo nodo será el que antes ocupaba la posición
+             * a reemplazar.
+             * El siguiente al anterior del nodo que se va a reemplazar será el
+             * nuevo nodo.
+             */
+
+            new_node -> next = current;
+            previous->next = new_node;
+
+            LIST->size++;
+        }
+
+    }
+
+}
+
+/**
  * @brief Método por defecto para insertar un dato a la lista
  *
  * El comportamiento por defecto del método es llamar al método
