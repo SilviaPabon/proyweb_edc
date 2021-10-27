@@ -1,3 +1,4 @@
+/*"NAVBAR"*/
 .header {
   background: linear-gradient(to left, #7b0090, #6ba0ff);
 }
@@ -15,6 +16,7 @@
   color: white;
 }
 
+/*CONTENEDOR DE LA PRESENTACIÓN*/
 .header_container {
   padding: 50px;
   background: url("../img/img_container.png");
@@ -28,10 +30,19 @@
   padding: 20px;
 }
 
+.jumbotron{
+  margin:0px; /*SE QUITA EL MARGEN POR DEFECTO DEL JUMBOTRON PARA QUE NO AFECTEN LOS MÁRGENES DEL CONTENEDOR PRINCIPAL*/
+}
+
+.inside_container h1{
+  margin: 0px;
+}
+
 .prueba {
   margin: 14px 14px;
 }
 
+/*TARJETAS DE LAS IMPLEMENTACIONES*/
 .cards_container {
   margin-top: 14px;
 }
