@@ -6,6 +6,7 @@ app = Flask(__name__)
 def index():
     return render_template('index.html');
 
+#Ruta hacia las implementaciones
 @app.route('/implementacion/<string:name>')
 def implementacion(name):
     nombre = name + '.html'
