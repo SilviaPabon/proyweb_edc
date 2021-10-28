@@ -232,7 +232,7 @@ void insertAtTail(struct SimpleLinkedList *LIST, int NEW_DATA){
  * cabeza de la lista.
  */
 void insertAt(struct SimpleLinkedList *LIST, int data, int position){
-    if(position == 0){
+    if(position == 0 || position == 1){
         insertAtHead(LIST, data);
     }else if(position == LIST->size +1){
         insertAtTail(LIST, data);
@@ -527,7 +527,7 @@ void reverse(struct SimpleLinkedList *LIST, struct SimpleLinkedList *HERE){
  * @code
  * int my_array[my_list.size];
  * toArray(&my_list, &my_array);
- * for(int i=0; i<my_list.size; i++){
+ * for(int i=0; i< my_list.size; i++){
  *      printf("\nEl valor del array en la posición %d , es: %d", i, my_array[i]);
  * }
  * @endcode
@@ -543,6 +543,79 @@ void toArray(struct SimpleLinkedList *LIST, int* ARRAY){
         ARRAY[index] = current->data;   // Se insertar el dato actual en el array
         current = current->next;    // Se cambia el nodo actual
         index++;    // Se aumenta el contador para insertar en la siguiente posición/
+    }
+
+}
+
+/**
+ * @brief Método para ordenar una lista simplemente enlazada (de menor a mayor).
+ *
+ * Primero se verifica que la lista no esté vacía, una vez se cumpla esta condición, se
+ * guarda el size original de la lista (ya que a continuación se va a vaciar), luego, se
+ * guardan los datos de la lista en un array, mediante el método toArray() implementado
+ * anteriormente. Finalmente, se itera el array y para cada elemento se va buscando su
+ * posición (Cuando se encuentre un número mayor, se inserta antes que este, y de no encontrar
+ * número mayor, se inserta en al final).
+ *
+ * @param LIST Puntero de la lista simplemente enlazada que se va a añadir
+ */
+void sort(struct SimpleLinkedList *LIST){
+
+    if(isEmpty(LIST)){  //Si la lista está vacía
+        printf("No se puede ordenar una lista vacía");
+    }else{
+
+        int *copia; //Copia del size original para el ciclo for
+        copia = LIST->size;
+
+        int array[LIST->size];  //Array para guardar los datos de la lista original
+        toArray(LIST, &array);
+
+        clear(LIST);    //Se vacía la lista original
+
+        for(int i=0; i<copia; i++){ //Se iteran los elementos del array
+
+            if(isEmpty(LIST)){  //En la primera ejecución, se inserta el dato en la cabeza
+                insert(LIST, array[i]);
+            }else{
+                /*
+                 * Una vez insertado el primer dato, se compara el valor del array
+                 * con todos los nodos de la lista hasta encontrar uno mayor (para insertarlo
+                 * antes de ese dato).
+                 */
+
+                struct node *current = LIST->head;  //Nodo para iterar la lista
+                int posicion = 1;   //Posición para saber dónde hay que insertar el dato
+                bool insertado = false; //Booleano para saber si se encontró algún mayor
+
+                while(current != NULL){
+
+                    if(array[i] < current->data){
+                        /*
+                         * Cuando se encuentre un dato mayor, el nuevo dato
+                         * se inserta antes.
+                         */
+                        insertAt(LIST, array[i], posicion);
+                        insertado = true;
+                        break;
+                    }
+
+                    //Si no se ha encontrado la posición, se sigue iterando.
+                    posicion++;
+                    current = current->next;
+                }
+
+                /*
+                 * Si se acabó el while y no se insertó, significa que no hay
+                 * ningún número mayor en la lista, por lo cual, se inserta al final.
+                 */
+                if(insertado == false){
+                    insertAtTail(LIST, array[i]);
+                }
+            }
+
+        }
+
     }
 
 }
