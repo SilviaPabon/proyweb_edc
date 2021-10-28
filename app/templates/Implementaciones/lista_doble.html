@@ -263,7 +263,11 @@ void insertHead(struct DoubleLinkedList *LIST, int data){
  * cabeza de la lista.
  */
 void insertAt(struct DoubleLinkedList *LIST, int data, int position){
-    if(position == 0){
+    /*
+     * 0 se entiende como "antes de la cabeza" y 1 "en la cabeza", por tanto,
+     * el resultado es el mismo, el nuevo dato insertado toma la posición de la cabeza.
+     */
+    if(position == 0 || position == 1){
         insertHead(LIST, data);
     }else if(position == LIST->size +1){
         insertTail(LIST, data);
@@ -283,7 +287,7 @@ void insertAt(struct DoubleLinkedList *LIST, int data, int position){
             /*
              * Se itera hasta llegar al nodo de la posición indicada
              */
-            for(int i=1; i<position; i++){
+            for(int i=1; i< position; i++){
                 current = current->next;
             }
 
@@ -319,50 +323,6 @@ void insertAt(struct DoubleLinkedList *LIST, int data, int position){
  */
 void insert(struct DoubleLinkedList *LIST, int data){
     insertTail(LIST, data);
-}
-
-// *********************************
-// Métodos para imprimir la lista
-// *********************************
-
-/**
-  * @brief Método para imprimir la lista "al derecho"
-  *
-  * Este método permite imprimir todos los nodos que conforman
-  * la lista, comenzando desde la cabeza, terminando en la cola.
-  *
-  * El funcionamiento es básico, se verifica que la lista no esté vacía
-  * y se llama al método nodeToString_ahead(), que se implementó anteriormente
-  * pasando como argumento el primer nodo de la lista.
-  *
-  * @param LIST puntero de la lista que se quiere imprimir
-  */
-void listToString_ahead(struct DoubleLinkedList *LIST){
-    if(isEmpty(LIST)){
-        printf("La lista está vacía");
-    }else{
-        nodeToString_ahead(LIST->head);
-    }
-}
-
-/**
-  * @brief Método para imprimir la lista "al revés"
-  *
-  * Este método permite imprimir todos los nodos que conforman
-  * la lista, comenzando desde la cola y terminando en la cabeza.
-  *
-  * El funcionamiento es básico, se verifica que la lista no esté vacía
-  * y se llama al método nodeToString_backward(), que se implementó anteriormente,
-  * pasando como argumento el último nodo de la lista.
-  *
-  * @param LIST puntero de la lista que se quiere imprimir
-  */
-void listToString_backward(struct DoubleLinkedList *LIST){
-    if(isEmpty(LIST)){
-        printf("La lista está vacía");
-    }else{
-        nodeToString_backward(LIST->tail);
-    }
 }
 
 // *********************************
@@ -645,7 +605,7 @@ void reverse(struct DoubleLinkedList *LIST, struct DoubleLinkedList *HERE){
  * @code
  * int my_array[my_list.size];
  * toArrayAhead(&my_list, &my_array);
- * for(int i=0; i<my_list.size; i++){
+ * for(int i=0; i< my_list.size; i++){
  *      printf("\nEl valor del array en la posición %d , es: %d", i, my_array[i]);
  * }
  * @endcode
@@ -675,7 +635,7 @@ void toArrayAhead(struct DoubleLinkedList *LIST, int* ARRAY){
  * @code
  * int my_array[my_list.size];
  * toArrayBackward(&my_list, &my_array);
- * for(int i=0; i<my_list.size; i++){
+ * for(int i=0; i< my_list.size; i++){
  *      printf("\nEl valor del array en la posición %d , es: %d", i, my_array[i]);
  * }
  * @endcode
@@ -694,6 +654,123 @@ void toArrayBackward(struct DoubleLinkedList *LIST, int* ARRAY){
         index++;    // Se aumenta el contador para insertar en la siguiente posición
     }
 
+}
+
+/**
+ * @brief Método para ordenar una lista doblemente enlazada (de menor a mayor).
+ *
+ * Primero se verifica que la lista no esté vacía, una vez se cumpla esta condición, se
+ * guarda el size original de la lista (ya que a continuación se va a vaciar), luego, se
+ * guardan los datos de la lista en un array, mediante el método toArrayAhead() implementado
+ * anteriormente. Finalmente, se itera el array y para cada elemento se va buscando su
+ * posición (Cuando se encuentre un número mayor, se inserta antes que este, y de no encontrar
+ * número mayor, se inserta en al final).
+ *
+ * @param LIST Puntero de la lista doblemente enlazada que se va a ordenar
+ */
+void sort(struct DoubleLinkedList *LIST){
+
+    if(isEmpty(LIST)){  //Si la lista está vacía
+        printf("No se puede ordenar una lista vacía");
+    }else{
+
+        int *copia; //Copia del size original para el ciclo for
+        copia = LIST->size;
+
+        int array[LIST->size];  //Array para guardar los datos de la lista original
+        toArrayAhead(LIST, &array);
+
+        clear(LIST);    //Se vacía la lista original
+
+        for(int i=0; i< copia; i++){ //Se iteran los elementos del array
+
+            if(isEmpty(LIST)){  //En la primera ejecución, se inserta el dato en la cabeza
+                insert(LIST, array[i]);
+            }else{
+                /*
+                 * Una vez insertado el primer dato, se compara el valor del array
+                 * con todos los nodos de la lista hasta encontrar uno mayor (para insertarlo
+                 * antes de ese dato).
+                 */
+
+                struct node *current = LIST->head;  //Nodo para iterar la lista
+                int posicion = 1;   //Posición para saber dónde hay que insertar el dato
+                bool insertado = false; //Booleano para saber si se encontró algún mayor
+
+                while(current != NULL){
+
+                    if(array[i] < current->data){
+                        /*
+                         * Cuando se encuentre un dato mayor, el nuevo dato
+                         * se inserta antes.
+                         */
+                        insertAt(LIST, array[i], posicion);
+                        insertado = true;
+                        break;
+                    }
+
+                    //Si no se ha encontrado la posición, se sigue iterando.
+                    posicion++;
+                    current = current->next;
+                }
+
+                /*
+                 * Si se acabó el while y no se insertó, significa que no hay
+                 * ningún número mayor en la lista, por lo cual, se inserta al final.
+                 */
+                if(insertado == false){
+                    insertTail(LIST, array[i]);
+                }
+            }
+
+        }
+
+    }
+
+}
+
+// *********************************
+// Métodos para imprimir la lista
+// *********************************
+
+/**
+  * @brief Método para imprimir la lista "al derecho"
+  *
+  * Este método permite imprimir todos los nodos que conforman
+  * la lista, comenzando desde la cabeza, terminando en la cola.
+  *
+  * El funcionamiento es básico, se verifica que la lista no esté vacía
+  * y se llama al método nodeToString_ahead(), que se implementó anteriormente
+  * pasando como argumento el primer nodo de la lista.
+  *
+  * @param LIST puntero de la lista que se quiere imprimir
+  */
+void listToString_ahead(struct DoubleLinkedList *LIST){
+    if(isEmpty(LIST)){
+        printf("La lista está vacía");
+    }else{
+        nodeToString_ahead(LIST->head);
+    }
+}
+
+/**
+  * @brief Método para imprimir la lista "al revés"
+  *
+  * Este método permite imprimir todos los nodos que conforman
+  * la lista, comenzando desde la cola y terminando en la cabeza.
+  *
+  * El funcionamiento es básico, se verifica que la lista no esté vacía
+  * y se llama al método nodeToString_backward(), que se implementó anteriormente,
+  * pasando como argumento el último nodo de la lista.
+  *
+  * @param LIST puntero de la lista que se quiere imprimir
+  */
+void listToString_backward(struct DoubleLinkedList *LIST){
+    if(isEmpty(LIST)){
+        printf("La lista está vacía");
+    }else{
+        nodeToString_backward(LIST->tail);
+    }
 }
 {% endblock %}
 
