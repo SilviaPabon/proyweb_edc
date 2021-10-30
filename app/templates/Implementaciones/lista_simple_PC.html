@@ -257,7 +257,7 @@ void insertAt(struct SimpleLinkedList *LIST, int data, int position){
             /*
              * Se itera hasta llegar al nodo de la posición indicada
              */
-            for(int i=1; i<position; i++){
+            for(int i=1; i< position; i++){
                 previous = current;
                 current = current->next;
             }
@@ -573,7 +573,7 @@ void sort(struct SimpleLinkedList *LIST){
 
         clear(LIST);    //Se vacía la lista original
 
-        for(int i=0; i<copia; i++){ //Se iteran los elementos del array
+        for(int i=0; i< copia; i++){ //Se iteran los elementos del array
 
             if(isEmpty(LIST)){  //En la primera ejecución, se inserta el dato en la cabeza
                 insert(LIST, array[i]);
