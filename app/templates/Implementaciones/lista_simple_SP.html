@@ -22,18 +22,6 @@ int getInfo(node *node){
     return node->info;
 }
 
-void nodeToString(node *node){
-    if (node == NULL){
-        printf("It doesn't exist\n");
-    } else{
-        if(node->next != NULL){ // Si tiene siguiente nodo
-            printf("Node: Data %d, Next: ->\n", node->info);
-            nodeToString(node->next);   // Llamada recursiva
-        } else{  // Si no tiene siguiente nodo
-            printf("Node: Data %d, Next: -> NULL", node->info);
-        }
-    }
-}
 {% endblock %}
 
 {% block titulo_2 %}CÓDIGO DE LA LISTA SIMPLEMENTE ENLAZADA{% endblock %}
@@ -47,11 +35,23 @@ struct LinkedList{
 };
 typedef struct LinkedList LinkedList;
 
+bool isEmpty(LinkedList *list){
+    return (list->head == NULL);
+}
+
 int getHead(LinkedList *list){
+    if (isEmpty(list)){
+        printf("Empty, head isn't exist\n");
+        return -1;
+    }
     return list->head->info;
 }
 
 int getTail(LinkedList *list){
+    if (isEmpty(list)){
+        printf("Empty, tail isn't exist\n");
+        return -1;
+    }
     return list->tail->info;
 }
 
@@ -63,19 +63,19 @@ int getSize(LinkedList *list){
     }
 }
 
-bool isEmpty(LinkedList *list){
-    return (list->head == NULL);
-}
-
 bool contains(LinkedList *list, int val){
-    node *newNode = list->head;
-    do{
-        if (newNode->info == val){
-            return true;
-        }
-        newNode = newNode->next;
-    } while (newNode != NULL);
-    return false;
+    if(isEmpty(list)){
+        return false;
+    } else{
+        node *newNode = list->head;
+        do{
+            if (newNode->info == val){
+                return true;
+            }
+            newNode = newNode->next;
+        } while (newNode != NULL);
+        return false;
+    }
 }
 
 node* search(LinkedList *list, int val){
@@ -156,14 +156,19 @@ bool insertAt(LinkedList* list, int index, int ingresar){
 }
 
 bool clear(LinkedList *list){
-    node *temp;
+    if(isEmpty(list)){
+        printf("Nothing to clear\n");
+        return false;
+    }else{
+        node *temp;
 
-    while(list->head != NULL)
-    {
-        temp = list->head;
-        list->head = list->head->next;
-        free(temp);
-        list->size--;
+        while(list->head != NULL)
+        {
+            temp = list->head;
+            list->head = list->head->next;
+            free(temp);
+            list->size--;
+        }
     }
 }
 
@@ -199,27 +204,35 @@ bool removeElement(LinkedList* list, int erase){
 }
 
 bool toArray(LinkedList* list, int array[]){
-    int index = 0;  // Contador para insertar los datos en el array
-    node *actual = list->head;   // Nodo para iterar la lista
+    if(isEmpty(list)){
+        return false;
+    }else{
+        int index = 0;  // Contador para insertar los datos en el array
+        node *actual = list->head;   // Nodo para iterar la lista
 
-    while(actual != NULL){
-        array[index] = actual->info;   // Se insertar el dato actual en el array
-        actual = actual->next;    // Se cambia el nodo actual
-        index++;    // Se aumenta el contador para insertar en la siguiente posición/
+        while(actual != NULL){
+            array[index] = actual->info;   // Se insertar el dato actual en el array
+            actual = actual->next;    // Se cambia el nodo actual
+            index++;    // Se aumenta el contador para insertar en la siguiente posición/
+        }
+        return true;
     }
 }
 
 LinkedList reverse(LinkedList* list){
 
-    int array[getSize(list)];
-    int size = getSize(list);
-    toArray(list, array);
-
-    clear(list);
-    for(int j = 0 ; j < size; j++ ) {
-        insertHead(list, array[j]);
+    if(isEmpty(list)){
+        printf("Empty list\n");
+    } else{
+        int array[getSize(list)];
+        int size = getSize(list);
+        toArray(list, array);
+        clear(list);
+        for(int j = 0 ; j < size; j++ ) {
+            insertHead(list, array[j]);
+        }
+        return *list;
     }
-    return *list;
 }
 //Es un apuntador void para que sea de cualquier tipo
 //su retorno es 0 si son iguales
@@ -228,15 +241,19 @@ int comparison(const void * a, const void * b) {
 }
 
 LinkedList sort(LinkedList* list){
-    int array[getSize(list)];
-    int size = getSize(list);
-    toArray(list, array);
-    qsort(array, getSize(list), sizeof(int), comparison);
-    clear(list);
-    for(int j = 0 ; j < size; j++ ) {
-        insert(list, array[j]);
+    if(isEmpty(list)){
+        printf("Empty list\n");
+    } else{
+        int array[getSize(list)];
+        int size = getSize(list);
+        toArray(list, array);
+        qsort(array, getSize(list), sizeof(int), comparison);
+        clear(list);
+        for(int j = 0 ; j < size; j++ ) {
+            insert(list, array[j]);
+        }
+        return *list;
     }
-    return *list;
 }
 
 void displayList(node *n)
