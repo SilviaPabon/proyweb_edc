@@ -4,12 +4,209 @@
 
 {% block titulo_1 %}CÓDIGO DEL NODO:{% endblock %}
 {%block node_code%}
-printf("Todo en orden"); 
+// --- ESTRUCTURA DEL NODO ---
+struct Node{
+    int info;
+    struct Node *next;
+};
+typedef struct Node node;
+
+node *createNode(int n){
+    node *new_node = malloc(sizeof(node));
+    new_node->info = n;
+    new_node->next = NULL;
+    return new_node;
+}
+
+int getInfo(node *node){
+    return node->info;
+} 
 {% endblock %}
 
 {% block titulo_2 %}CÓDIGO DE LA COLA - QUEUE{% endblock %}
 {%block structure_code%}
-printf("Todo en orden x2"); 
+// --- ESTRUCTURA DE LA QUEUE ---
+
+struct Queue{
+    node *head;
+    node *tail;
+    int size;
+};
+typedef struct Queue Queue;
+
+bool isEmpty(Queue *q){
+    return (q->head == NULL && q->tail == NULL);
+}
+
+int getHead(Queue *q){
+    if (isEmpty(q)){
+        printf("Empty, head isn't exist\n");
+        return -1;
+    }
+    return q->head->info;
+}
+
+int getTail(Queue *q){
+    if (isEmpty(q)){
+        printf("Empty, tail isn't exist\n");
+        return -1;
+    }
+    return q->tail->info;
+}
+
+int getSize(Queue *q) {
+    if (q == NULL) {
+        return 0;
+    } else {
+        return q->size;
+    }
+}
+
+void enqueue(Queue* q, int val){
+    node* newNode = createNode(val);
+    if (isEmpty(q)){
+        q->head = newNode;
+        q->tail = newNode;
+    } else {
+        q->tail->next = newNode;
+        q->tail = newNode;
+    }
+    q->size++;
+}
+
+int dequeue(Queue* q){
+    if(isEmpty(q)){
+        printf("Nothing to dequeue\n");
+        return false;
+    }else{
+        node* tmp = q->head;
+        int aux = q->head->info;
+        q->head = q->head->next;
+        if(q->head == NULL){
+            q->tail = NULL;
+        }
+        free(tmp);
+        q->size--;
+        return aux;
+    }
+}
+
+bool contains(Queue *q, int val){
+    if(isEmpty(q)){
+        return false;
+    }else{
+        node *newNode = q->head;
+        int t = 0;
+        while (t < q->size){
+            if (newNode->info == val){
+                return true;
+            }
+            newNode = newNode->next;
+            t++;
+        }
+        return false;
+    }
+}
+
+node* search(Queue *list, int val){
+    node* aux = {NULL};
+    if (contains(list, val)){
+        node* aux = list->head;
+        int t = 0;
+        while (t < list->size){
+            if (aux->info == val){
+                return aux;
+            }
+            aux = aux->next;
+            t++;
+        }
+    } else {
+        return NULL;
+    }
+}
+
+bool clear(Queue *q){
+
+    if(isEmpty(q)){
+        return false;
+    }else{
+        while(q->size > 0)
+        {
+            dequeue(q);
+        }
+        return true;
+    }
+}
+
+bool toArray(Queue* q, int array[]){
+    if(isEmpty(q)){
+        return false;
+    }else {
+        int index = 0;  // Contador para insertar los datos en el array
+        node *actual = q->head;   // Nodo para iterar la lista
+
+        while (actual != NULL) {
+            array[index] = actual->info;   // Se insertar el dato actual en el array
+            actual = actual->next;    // Se cambia el nodo actual
+            index++;    // Se aumenta el contador para insertar en la siguiente posición/
+        }
+        return true;
+    }
+}
+
+Queue reverse(Queue* q){
+    if(isEmpty(q)){
+        printf("Empty Queue\n");
+    }else {
+        int array[getSize(q)];
+        int size = getSize(q);
+        toArray(q, array);
+        clear(q);
+        for (int j = size - 1; j >= 0; j--) {
+            enqueue(q, array[j]);
+        }
+        return *q;
+    }
+}
+//Es un apuntador void para que sea de cualquier tipo
+//su retorno es 0 si son iguales
+int comparison(const void * a, const void * b) {
+    return ( *(int*)a - *(int*)b );
+}
+
+Queue sort(Queue* q){
+    if(isEmpty(q)){
+        printf("Empty Queue\n");
+    }else {
+        int array[getSize(q)];
+        int size = getSize(q);
+        toArray(q, array);
+        qsort(array, getSize(q), sizeof(int), comparison);
+        clear(q);
+        for (int j = 0; j < size; j++) {
+            enqueue(q, array[j]);
+        }
+        return *q;
+    }
+}
+//son más de apoyo
+void displayQueue(node *n)
+{
+    node *tmp = n;
+    while(tmp != NULL)
+    {
+        printf(" Info = %d\n", tmp->info);
+        tmp = tmp->next;
+    }
+}
+
+void printQueue(Queue *list){
+    if(isEmpty(list)){
+        printf("Empty List\n");
+    }else{
+        displayQueue(list->head);
+    }
+} 
 {% endblock %}
 
 {% block table_content %}

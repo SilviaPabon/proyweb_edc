@@ -4,21 +4,309 @@
 
 {% block titulo_1 %}CÓDIGO DEL NODO:{% endblock %}
 {%block node_code%}
-printf("Todo en orden"); 
+// --- ESTRUCTURA DEL NODO ---
+struct Node{
+    int info;
+    struct Node *next;
+};
+typedef struct Node node;
+
+node *createNode(int n){
+    node *new_node = malloc(sizeof(node));
+    new_node->info = n;
+    new_node->next = NULL;
+    return new_node;
+}
+
+int getInfo(node *node){
+    return node->info;
+}
+
 {% endblock %}
 
 {% block titulo_2 %}CÓDIGO DE LA LISTA SIMPLEMENTE ENLAZADA{% endblock %}
 {%block structure_code%}
-printf("Todo en orden x2"); 
+// --- ESTRUCTURA DE LA LINKEDLIST ---
+
+struct LinkedList{
+    node *head;
+    node *tail;
+    int size;
+};
+typedef struct LinkedList LinkedList;
+
+bool isEmpty(LinkedList *list){
+    return (list->head == NULL);
+}
+
+int getHead(LinkedList *list){
+    if (isEmpty(list)){
+        printf("Empty, head isn't exist\n");
+        return -1;
+    }
+    return list->head->info;
+}
+
+int getTail(LinkedList *list){
+    if (isEmpty(list)){
+        printf("Empty, tail isn't exist\n");
+        return -1;
+    }
+    return list->tail->info;
+}
+
+int getSize(LinkedList *list){
+    if(list == NULL){
+        return 0;
+    } else {
+        return list->size;
+    }
+}
+
+bool contains(LinkedList *list, int val){
+    if(isEmpty(list)){
+        return false;
+    } else{
+        node *newNode = list->head;
+        do{
+            if (newNode->info == val){
+                return true;
+            }
+            newNode = newNode->next;
+        } while (newNode != NULL);
+        return false;
+    }
+}
+
+node* search(LinkedList *list, int val){
+    node* aux = {NULL};
+    if (contains(list, val)){
+        node* aux = list->head;
+        do{
+            if (aux->info == val){
+                return aux;
+            }
+            aux = aux->next;
+        } while (aux != NULL);
+    } else {
+        return NULL;
+    }
+}
+
+bool insertHead(LinkedList *list, int val){
+    node *newNode = createNode(val);
+
+    if (isEmpty(list)){
+        list->head = newNode;
+        list->tail = list->head;
+    } else {
+        newNode->next = list->head;
+        list->head = newNode;
+    }
+    list->size++;
+}
+
+bool insertTail(LinkedList *list, int val){
+
+    node *newNode = createNode(val);
+
+    if (isEmpty(list)){
+        list->head = newNode;
+        list->tail = list->head;
+    } else {
+        list->tail->next = newNode;
+        list->tail = list->tail->next;
+    }
+    list->size++;
+}
+
+bool insert(LinkedList *list, int val){
+    return insertTail(list, val);
+}
+
+bool insertAt(LinkedList* list, int index, int ingresar){
+    node *newNode = createNode(ingresar);
+    node *actual = list->head;
+    if (isEmpty(list)){
+        if(index != 0){
+            return false;
+        }else{
+            insert(list, ingresar);
+            return true;
+        }
+    }
+    if(!isEmpty(list) && index == 0){
+        insertHead(list, ingresar);
+        return true;
+    }
+    node* prev = {NULL};
+    int c = 0;
+    while (c < index){
+        prev = actual;
+        actual = actual->next;
+        if(actual == NULL){
+            break;
+        }
+        c++;
+    }
+    newNode->next = actual;
+    prev->next = newNode;
+    list->size++;
+    return true;
+}
+
+bool clear(LinkedList *list){
+    if(isEmpty(list)){
+        printf("Nothing to clear\n");
+        return false;
+    }else{
+        node *temp;
+
+        while(list->head != NULL)
+        {
+            temp = list->head;
+            list->head = list->head->next;
+            free(temp);
+            list->size--;
+        }
+    }
+}
+
+bool removeElement(LinkedList* list, int erase){
+    if(!isEmpty(list)){
+        node *tmp = {NULL};
+        if(contains(list, erase)){
+            if(list->head->info == erase){
+                tmp = list->head;
+                list->head = list->head->next;
+                free(tmp);
+            } else {
+                node *actual = list->head;
+                while (actual->next != NULL){
+                    if (actual->next->info == erase){
+                        tmp = actual->next;
+                        actual->next = actual->next->next;
+                        free(tmp);
+                        break;
+                    } else {
+                        actual = actual->next;
+                    }
+                }
+            }
+            list->size--;
+        }else{
+            printf("This element isn't exist in the list\n");
+        }
+    }else{
+        printf("Nothing to erase\n");
+        return false;
+    }
+}
+
+bool toArray(LinkedList* list, int array[]){
+    if(isEmpty(list)){
+        return false;
+    }else{
+        int index = 0;  // Contador para insertar los datos en el array
+        node *actual = list->head;   // Nodo para iterar la lista
+
+        while(actual != NULL){
+            array[index] = actual->info;   // Se insertar el dato actual en el array
+            actual = actual->next;    // Se cambia el nodo actual
+            index++;    // Se aumenta el contador para insertar en la siguiente posición/
+        }
+        return true;
+    }
+}
+
+LinkedList reverse(LinkedList* list){
+
+    if(isEmpty(list)){
+        printf("Empty list\n");
+    } else{
+        int array[getSize(list)];
+        int size = getSize(list);
+        toArray(list, array);
+        clear(list);
+        for(int j = 0 ; j < size; j++ ) {
+            insertHead(list, array[j]);
+        }
+        return *list;
+    }
+}
+//Es un apuntador void para que sea de cualquier tipo
+//su retorno es 0 si son iguales
+int comparison(const void * a, const void * b) {
+    return ( *(int*)a - *(int*)b );
+}
+
+LinkedList sort(LinkedList* list){
+    if(isEmpty(list)){
+        printf("Empty list\n");
+    } else{
+        int array[getSize(list)];
+        int size = getSize(list);
+        toArray(list, array);
+        qsort(array, getSize(list), sizeof(int), comparison);
+        clear(list);
+        for(int j = 0 ; j < size; j++ ) {
+            insert(list, array[j]);
+        }
+        return *list;
+    }
+}
+
+void displayList(node *n)
+{
+    node *tmp = n;
+    while(tmp != NULL)
+    {
+        printf(" Info = %d\n", tmp->info);
+        tmp = tmp->next;
+    }
+}
+
+void printList(LinkedList *list){
+    if(isEmpty(list)){
+        printf("Empty List\n");
+    }else{
+        displayList(list->head);
+    }
+} 
 {% endblock %}
 
 {% block table_content %}
 <!-- TEMPLATE PARA AGREGAR UNA FILA A LA TABLA: -->
-<!--
+
 <tr>
     <th scope="row">1</th>
     <td>Título/Descripción</td>
-    <td>Enlace</td>
+    <td>Same references of partner</td>
 </tr>
--->
+<tr>
+    <th scope="row">2</th>
+    <td>Título/Descripción - Delete list</td>
+    <td>https://codeforwin.org/2015/09/c-program-to-delete-all-nodes-of-singly-linked-list.html</td>
+</tr>
+<tr>
+    <th scope="row">3</th>
+    <td>Título/Descripción</td>
+    <td>https://www.codingame.com/playgrounds/6991/linked-list-insertion-at-nth-position</td>
+</tr>
+<tr>
+    <th scope="row">4</th>
+    <td>Título/Descripción</td>
+    <td>Cairó</td>
+</tr>
+<tr>
+    <th scope="row">5</th>
+    <td>Título/Descripción</td>
+    <td>https://www.log2base2.com/data-structures/linked-list/deleting-a-node-in-linked-list.html</td>
+</tr>
+<tr>
+    <th scope="row">6</th>
+    <td>Título/Descripción</td>
+    <td>https://www.gnu.org/software/libc/manual/html_node/Array-Sort-Function.html</td>
+</tr>
+
 {% endblock %}
