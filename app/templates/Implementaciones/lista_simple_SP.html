@@ -4,13 +4,37 @@
 
 {% block titulo_1 %}CÓDIGO DEL NODO:{% endblock %}
 {%block node_code%}
+// --- #include ---
+#include <stdio.h>
+#include <stddef.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
 // --- ESTRUCTURA DEL NODO ---
+/**
+ * @brief Struct del nodo.
+ *
+ * La lista simplemente enlazada se compone de nodos, cuyos atributos son:
+ * -El dato que almacenan (Límitado a un número/int para este caso), info,
+ * -El puntero al nodo siguiente, next
+ * Se utiliza "typedef struct Node node;" para evitar el uso constante de struct Node nombreNodo
+ * limitándolo al nombre que se defina allí.
+ */
 struct Node{
     int info;
     struct Node *next;
 };
 typedef struct Node node;
 
+// *********************************
+// Método de creación de nodo
+// *********************************
+
+/**
+ * @brief Método para crear un nodo dado el dato que contendrá.
+ * @param n el dato entero que contendrá el nuevo nodo a crear.
+ * @return El puntero al nodo creado.
+ */
 node *createNode(int n){
     node *new_node = malloc(sizeof(node));
     new_node->info = n;
@@ -18,6 +42,11 @@ node *createNode(int n){
     return new_node;
 }
 
+/**
+ * @brief Método para obtener la información que contiene el nodo.
+ * @param El puntero al nodo.
+ * @return El entero contenido dentro del nodo.
+ */
 int getInfo(node *node){
     return node->info;
 }
@@ -28,6 +57,15 @@ int getInfo(node *node){
 {%block structure_code%}
 // --- ESTRUCTURA DE LA LINKEDLIST ---
 
+/**
+ * @brief Struct de la lista simplemente enlazada.
+ *
+ * Una vez implementado lo relacionado al nodo de la lista
+ * se procede a implementar la estructura de la lista
+ * junto con sus métodos/funciones.
+ * Se utiliza "typedef struct LinkedList LinkedList;" para evitar el uso constante de struct LinkedList nombreNodo
+ * limitándolo al nombre que se defina allí.
+ */
 struct LinkedList{
     node *head;
     node *tail;
@@ -35,10 +73,22 @@ struct LinkedList{
 };
 typedef struct LinkedList LinkedList;
 
+/**
+ * @brief Método para comprobar si la lista está vacía, comprobando si list->head apunta a NULL.
+ * Si no apunta a null, está apuntando a otro nodo, indicado que no está vacía
+ * @param El puntero a la LinkedList.
+ * @return Valor booleano de 0 o 1 según sea cierto o falso.
+ */
 bool isEmpty(LinkedList *list){
     return (list->head == NULL);
 }
 
+/**
+ * @brief Método para obtener la cabeza de la lista, funciona como un getter
+ * si se encuentra vacía retorna -1 y una impresión indicando que está vacía.
+ * @param El puntero a la LinkedList.
+ * @return Valor entero que se encuentre en la head o cabeza.
+ */
 int getHead(LinkedList *list){
     if (isEmpty(list)){
         printf("Empty, head isn't exist\n");
@@ -47,6 +97,12 @@ int getHead(LinkedList *list){
     return list->head->info;
 }
 
+/**
+ * @brief Método para obtener la cola de la lista, funciona como un getter
+ * si se encuentra vacía retorna -1 y una impresión indicando que está vacía.
+ * @param El puntero a la LinkedList.
+ * @return Valor entero que se encuentre en la tail o cola.
+ */
 int getTail(LinkedList *list){
     if (isEmpty(list)){
         printf("Empty, tail isn't exist\n");
@@ -55,6 +111,11 @@ int getTail(LinkedList *list){
     return list->tail->info;
 }
 
+/**
+ * @brief Método para obtener el tamaño de la lista, funciona como un getter
+ * @param El puntero a la LinkedList.
+ * @return Valor entero que representa el tamaño de la lista.
+ */
 int getSize(LinkedList *list){
     if(list == NULL){
         return 0;
@@ -63,67 +124,113 @@ int getSize(LinkedList *list){
     }
 }
 
+/**
+ * @brief Método para saber si un valor se encuentra contenido dentro de la lista
+ * si se encuentra vacía retorna -1 y una impresión indicando que está vacía.
+ * @param El puntero a la LinkedList y el valor a buscar
+ * @return false si la lista está vacía o no se encuentra el valor, true si lo encuentra (en binario).
+ */
 bool contains(LinkedList *list, int val){
-    if(isEmpty(list)){
+    if(isEmpty(list)){ //si está vacía la lista, se ahorra la búsqueda retornando falso
         return false;
     } else{
         node *newNode = list->head;
         do{
-            if (newNode->info == val){
+            if (newNode->info == val){ //si la info de "newNode" es igual al val (encuentra), retorna true
                 return true;
             }
-            newNode = newNode->next;
-        } while (newNode != NULL);
-        return false;
+            newNode = newNode->next; //newNode cambia al nodo siguiente hasta que se cumpla la condición del while
+        } while (newNode != NULL); //hasta que newNode no se encuentre con el NULL después del último nodo
+        return false; //si no lo encuentra, retorna falso
     }
 }
 
+/**
+ * @brief Método para buscar un nodo con x valor contenido dentro de la lista
+ * la diferencia con contains es que este método retorna un nodo o un valor NULL
+ * Información importante:
+ * En un caso como el siguiente:
+ *   node* node1 = search(&q, 12); si el valor 12 no está contenido
+ *   printf("Contains? %s\n", node1); se debe poner %s en el printf, e imprimirá correctamnte (null)
+ *   esto para probar el nodo nulo.
+ *   Si está contenido, con %d, al node1->info, bastaría
+ * @param El puntero a la LinkedList y el valor a buscar
+ * @return si encuentra el valor, retorna un nodo de tipo puntero, de lo contrario, NULL.
+ */
 node* search(LinkedList *list, int val){
     node* aux = {NULL};
-    if (contains(list, val)){
+    if (contains(list, val)){ //se usa contains para saber si está contenido el valor en la lista
         node* aux = list->head;
         do{
             if (aux->info == val){
                 return aux;
             }
             aux = aux->next;
-        } while (aux != NULL);
+        } while (aux != NULL); //hasta que aux no se encuentre con el NULL después del último nodo
     } else {
         return NULL;
     }
 }
 
+/**
+ * @brief Método para insertar los nodos por la cabeza o el frente de la lista
+ * @param El puntero a la LinkedList y el valor a ingresar
+ * @return true si se inserta correctamente (binario).
+ */
 bool insertHead(LinkedList *list, int val){
-    node *newNode = createNode(val);
+    node *newNode = createNode(val); //se crea el nuevo nodo a ingresar
 
-    if (isEmpty(list)){
-        list->head = newNode;
-        list->tail = list->head;
+    if (isEmpty(list)){ //comprueba si la lista está vacia, siendo así el primer nodo a ingresar
+        list->head = newNode; //la cabeza apunta hacia el nuevo nodo
+        list->tail = list->head; //como es un solo nodo, la cola apunta a la cabeza
     } else {
-        newNode->next = list->head;
-        list->head = newNode;
+        newNode->next = list->head; //si ya hay nodos, el apuntador next de newNode apunta a la cabeza actual de la lista
+        list->head = newNode; //y ahora la nueva cabeza es newNode, pues el apuntador head, apunta hacia él.
     }
-    list->size++;
+    list->size++; //incrementa en uno el tamaño de la lista
 }
 
+/**
+ * @brief Método para insertar los nodos por la cola de la lista
+ * @param El puntero a la LinkedList y el valor a ingresar
+ * @return true si se inserta correctamente (binario).
+ */
 bool insertTail(LinkedList *list, int val){
 
     node *newNode = createNode(val);
 
-    if (isEmpty(list)){
-        list->head = newNode;
-        list->tail = list->head;
+    if (isEmpty(list)){ //comprueba si la lista está vacia, siendo así el primer nodo a ingresar
+        list->head = newNode; //la cabeza apunta hacia el nuevo nodo
+        list->tail = list->head; //como es un solo nodo, la cola apunta a la cabeza
     } else {
-        list->tail->next = newNode;
-        list->tail = list->tail->next;
+        list->tail->next = newNode; //el apuntador next de la cola, apunta hacia el nuevo nodo
+        list->tail = list->tail->next; //el apuntador cola ahora es aquél que se había ubicado después de
+                                        // la que era la cola anteriormente
     }
-    list->size++;
+    list->size++; //incrementa en uno el tamaño de la lista
 }
 
+/**
+ * @brief Método encapsulado para insertar nodos en la lista, por la tail o cola
+ * @param El puntero a la LinkedList y el valor a ingresar
+ * @return true si se inserta correctamente (binario).
+ */
 bool insert(LinkedList *list, int val){
     return insertTail(list, val);
 }
 
+/**
+ * @brief Método para insertar los nodos en la posición que indique index.
+ * Existen 3 alternativas:
+ *  -La lista está vacía:
+ *      -Y se pone un índice diferente de 0, return false.
+ *      -Se pone índice 0, se llama al método insert, el el primer nodo.
+ *  -La lista no está vacía y el index es 0 (insertar en la cabeza):
+ *      Se llama a la función insertHead
+ *  -La lista no está vacía y el index es > a 0
+ * @param El puntero a la LinkedList, el index donde se quiere ingresar y el valor a ingresar.
+ * @return true si se inserta correctamente (binario).
+ */
 bool insertAt(LinkedList* list, int index, int ingresar){
     node *newNode = createNode(ingresar);
     node *actual = list->head;
@@ -139,79 +246,103 @@ bool insertAt(LinkedList* list, int index, int ingresar){
         insertHead(list, ingresar);
         return true;
     }
-    node* prev = {NULL};
-    int c = 0;
-    while (c < index){
-        prev = actual;
-        actual = actual->next;
-        if(actual == NULL){
+    node* prev = {NULL}; //nodo auxiliar prev (inicializar siempre los apuntadores en NULL)
+    int c = 0; //c ayudará a llevar la cuenta
+    while (c < index){ //mientras c sea menor al númer index:
+        prev = actual; //prev se convierte en el nodo actual en cada ciclo
+        actual = actual->next; //actual se modifica, y pasa a ser su siguiente
+        if(actual == NULL){ //final de la lista, que se rompa el ciclo
             break;
         }
         c++;
     }
-    newNode->next = actual;
-    prev->next = newNode;
-    list->size++;
+    newNode->next = actual; //el siguiente del nuevo nodo apunta a actual
+    prev->next = newNode; //el siguiente de prev es el nuevo nodo
+    // 1->3->4->NULL - Se quiere ingresar en index 1, val 2 -
+    //actual = 3 prev = 1 --- 1->2->3->4->NULL
+    list->size++; //el tamaño aumenta en uno
     return true;
 }
 
+/**
+ * @brief Método para limpiar toda la lista, liberando el espacio de memoria de cada nodo
+ * @param El puntero a la LinkedList
+ * @return true si se limpia o borra toda correctamente (binario).
+ */
 bool clear(LinkedList *list){
-    if(isEmpty(list)){
+    if(isEmpty(list)){ //si la lista está vacía no hay nada que borrar, retorna falso
         printf("Nothing to clear\n");
         return false;
     }else{
-        node *temp;
+        node *temp; //apuntador temporal
 
-        while(list->head != NULL)
+        while(list->head != NULL) //mientras la cabeza de la lista no llege a NULL, haga lo siguiente:
         {
-            temp = list->head;
-            list->head = list->head->next;
-            free(temp);
-            list->size--;
+            temp = list->head; //temp apunta a la cabeza de la lista
+            list->head = list->head->next; //ahora la cabeza es el nodo siguiente de la que antes era la cabeza
+            free(temp); //se libera el espacio de memoria con free, para poder asignar ese espacio liberado luego
+            list->size--; //disminuye tamaño de la lista
         }
+        return true;
     }
 }
 
+/**
+ * @brief Método para eliminar el nodo con el valor que se ponga de parámetro
+ * Dos alternativa:
+ * -Eliminar la cabeza
+ * -Eliminar cualquier otro elemento
+ * @param El puntero a la LinkedList y el valor a borrar
+ * @return true si se limpia o borra correctamente el nodo escogido (binario).
+ */
 bool removeElement(LinkedList* list, int erase){
     if(!isEmpty(list)){
         node *tmp = {NULL};
-        if(contains(list, erase)){
-            if(list->head->info == erase){
-                tmp = list->head;
-                list->head = list->head->next;
-                free(tmp);
+        if(contains(list, erase)){ //si el resultado es falso, no se ingresa y se imprime que el elemento no está en la lista
+            if(list->head->info == erase){ //Se comprueba si el elemento a eliminar es el mismo que está en la cabeza
+                tmp = list->head;  //se apunta tmp a list->head
+                list->head = list->head->next; //la nueva list->head es el elemento siguiente a la que era la list->head, antes
+                free(tmp); //se libera el espacio de memoria
             } else {
-                node *actual = list->head;
+                node *actual = list->head; //apuntador actual, apunta a la cabeza de la lista
                 while (actual->next != NULL){
-                    if (actual->next->info == erase){
-                        tmp = actual->next;
-                        actual->next = actual->next->next;
-                        free(tmp);
+                    if (actual->next->info == erase){ //si encuntra el nodo (si hay varios iguales, borra al primero)
+                        tmp = actual->next; //tmp apunta al ste de actual. (se quiere borrar 16) 14->15->16->17...
+                        // si actual es 15, tmp es 16
+                        actual->next = actual->next->next; //actual->next->next es 17 y ahora el ste de actual (15) apunta a 17
+                        free(tmp); //se libera el espacio de memoria de nodo con valor 16
                         break;
                     } else {
-                        actual = actual->next;
+                        actual = actual->next; //actualización de actual hasta que no se cumpla la condición del if
                     }
                 }
             }
-            list->size--;
+            list->size--; //se disminuye el tamaño de la lista
+            return true;
         }else{
-            printf("This element isn't exist in the list\n");
+            printf("This element isn't exist in the list\n"); //si el elemento no existe, no se puede eliminar
+            return false;
         }
     }else{
-        printf("Nothing to erase\n");
+        printf("Nothing to erase\n"); //la lista está vacía, nada que borrar, retorna falso
         return false;
     }
 }
 
+/**
+ * @brief Método para convertir la lista en un array
+ * @param El puntero a la LinkedList y un array de enteros que se va a llenar
+ * @return true si se hace la conversión (binario).
+ */
 bool toArray(LinkedList* list, int array[]){
-    if(isEmpty(list)){
+    if(isEmpty(list)){ // si la lista está vacía, retorna falso
         return false;
     }else{
         int index = 0;  // Contador para insertar los datos en el array
         node *actual = list->head;   // Nodo para iterar la lista
 
         while(actual != NULL){
-            array[index] = actual->info;   // Se insertar el dato actual en el array
+            array[index] = actual->info;   // Se inserta el dato actual en el array
             actual = actual->next;    // Se cambia el nodo actual
             index++;    // Se aumenta el contador para insertar en la siguiente posición/
         }
@@ -219,44 +350,78 @@ bool toArray(LinkedList* list, int array[]){
     }
 }
 
+/**
+ * @brief Método para invertir la lista 15->16->17->NULL 17->16->15->NULL
+ * Lo que hace este método es valerse del método toArray como auxiliar, para convertir la LinkedList
+ * en un array, luego limpiar la lista (su espacio en memoria) con clear y ya luego, insertar en la lista
+ * por la head o cabeza, los números albergados en el array.
+ * @param El puntero a la LinkedList
+ * @return Retorna la LinkedList invertida.
+ */
 LinkedList reverse(LinkedList* list){
 
-    if(isEmpty(list)){
+    if(isEmpty(list)){ // si la Linkedlist está vacía no se hace procedimiento, imprime mensaje indicando esto
         printf("Empty list\n");
     } else{
-        int array[getSize(list)];
+        int array[getSize(list)]; // array auxiliar
         int size = getSize(list);
-        toArray(list, array);
-        clear(list);
+        toArray(list, array); // array auxiliar
+        clear(list); // libera espacio de memoria de toda la lista
         for(int j = 0 ; j < size; j++ ) {
-            insertHead(list, array[j]);
+            insertHead(list, array[j]); //inserción por cabeza
         }
         return *list;
     }
 }
-//Es un apuntador void para que sea de cualquier tipo
-//su retorno es 0 si son iguales
+
+/**
+ * @brief Método para comparar 2 números o datos
+ * Complemento para la función qsort()
+ * @param 2 apuntadores void (este método se puede reutilizar para comparar otro tipo de datos)
+ * @return 0 si son iguales.
+ */
 int comparison(const void * a, const void * b) {
     return ( *(int*)a - *(int*)b );
 }
 
+/**
+ * @brief Método para ordenar la lista.
+ * Complemento para la función qsort().
+ * Este método al igual que el anterior utiliza toArray como método auxiliar
+ * El array se convierte en uno de los parámetros de la función qsort
+ * Luego se limpia el espacio de memoria de la lista
+ * y finalmente se recorre el array ordenado y se va insertando cada número de nuevo en la lista
+ * @param la lista que se va a ordenar.
+ * @return la lista ordenada.
+ */
+/**
+* @brief Método qsort, librería que utiliza quicksort para ordenar un array
+* Complemento para la función sort
+* @param apuntador al array, número de elementos en el array, el tamaño de los elementos en el array
+ * en este caso enteros, llamada a la función que va a comparar a los 2 elementos
+* @return retorna un array ordenado.
+*/
 LinkedList sort(LinkedList* list){
-    if(isEmpty(list)){
+    if(isEmpty(list)){ // si la lista está vacía, no se hace nada, imprime mensaje indicando esto
         printf("Empty list\n");
     } else{
         int array[getSize(list)];
         int size = getSize(list);
-        toArray(list, array);
-        qsort(array, getSize(list), sizeof(int), comparison);
-        clear(list);
-        for(int j = 0 ; j < size; j++ ) {
+        toArray(list, array); // array auxiliar
+        qsort(array, getSize(list), sizeof(int), comparison); // ordenamiento del array
+        clear(list); // liberación de espacio de memoria
+        for(int j = 0 ; j < size; j++ ) { // inserción de los datos ordenados
             insert(list, array[j]);
         }
-        return *list;
+        return *list; // retorno lista ordenada
     }
 }
 
-void displayList(node *n)
+/**
+* @brief Método complementario a printList, imprime la info de cada nodo
+* @param apuntador a un nodo
+*/
+void displayNode(node *n)
 {
     node *tmp = n;
     while(tmp != NULL)
@@ -266,13 +431,18 @@ void displayList(node *n)
     }
 }
 
+/**
+* @brief Método para imprimir la lista
+* utiliza como complemento a displayNode
+* @param apuntador a la Linkedlist
+*/
 void printList(LinkedList *list){
     if(isEmpty(list)){
         printf("Empty List\n");
     }else{
-        displayList(list->head);
+        displayNode(list->head);
     }
-} 
+}
 {% endblock %}
 
 {% block table_content %}
