@@ -5,10 +5,10 @@
 {% block titulo_1 %}CÓDIGO DEL NODO:{% endblock %}
 {%block node_code%}
 // --- #include ---
-#include <stdio.h>
-#include <stddef.h>
-#include <stdbool.h>
-#include <stdlib.h>
+#include &lt;stdio.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stdlib.h&gt;
 
 // --- ESTRUCTURA DEL NODO ---
 /**
@@ -188,6 +188,7 @@ bool insertHead(LinkedList *list, int val){
         list->head = newNode; //y ahora la nueva cabeza es newNode, pues el apuntador head, apunta hacia él.
     }
     list->size++; //incrementa en uno el tamaño de la lista
+    return true;
 }
 
 /**
@@ -208,6 +209,7 @@ bool insertTail(LinkedList *list, int val){
                                         // la que era la cola anteriormente
     }
     list->size++; //incrementa en uno el tamaño de la lista
+    return true;
 }
 
 /**
@@ -289,7 +291,7 @@ bool clear(LinkedList *list){
 
 /**
  * @brief Método para eliminar el nodo con el valor que se ponga de parámetro
- * Dos alternativa:
+ * Dos alternativas:
  * -Eliminar la cabeza
  * -Eliminar cualquier otro elemento
  * @param El puntero a la LinkedList y el valor a borrar
@@ -298,7 +300,7 @@ bool clear(LinkedList *list){
 bool removeElement(LinkedList* list, int erase){
     if(!isEmpty(list)){
         node *tmp = {NULL};
-        if(contains(list, erase)){ //si el resultado es falso, no se ingresa y se imprime que el elemento no está en la lista
+        if(contains(list, erase)){ //si el resultado es falso, no se elimina y se imprime que el elemento no está en la lista
             if(list->head->info == erase){ //Se comprueba si el elemento a eliminar es el mismo que está en la cabeza
                 tmp = list->head;  //se apunta tmp a list->head
                 list->head = list->head->next; //la nueva list->head es el elemento siguiente a la que era la list->head, antes
@@ -446,37 +448,62 @@ void printList(LinkedList *list){
 {% endblock %}
 
 {% block table_content %}
-<!-- TEMPLATE PARA AGREGAR UNA FILA A LA TABLA: -->
-
 <tr>
     <th scope="row">1</th>
-    <td>Título/Descripción</td>
-    <td>Same references of partner</td>
+    <td>Punteros en C:</td>
+    <td>https://www.hackerrank.com/challenges/pointer-in-c/problem</td>
 </tr>
 <tr>
     <th scope="row">2</th>
-    <td>Título/Descripción - Delete list</td>
-    <td>https://codeforwin.org/2015/09/c-program-to-delete-all-nodes-of-singly-linked-list.html</td>
+    <td>Structs en C:</td>
+    <td>https://youtu.be/CoW5NyFyGb4</td>
 </tr>
 <tr>
     <th scope="row">3</th>
-    <td>Título/Descripción</td>
-    <td>https://www.codingame.com/playgrounds/6991/linked-list-insertion-at-nth-position</td>
+    <td>Guía de implementación lista simplemente enlazada en C</td>
+    <td>https://youtu.be/NPmwuR4VbKk</td>
 </tr>
 <tr>
     <th scope="row">4</th>
-    <td>Título/Descripción</td>
-    <td>Cairó</td>
+    <td>Memoria dinámica en C: Malloc y Free</td>
+    <td>http://labsopa.dis.ulpgc.es/fso/cpp/intro_c/introc75.htm</td>
 </tr>
 <tr>
     <th scope="row">5</th>
-    <td>Título/Descripción</td>
-    <td>https://www.log2base2.com/data-structures/linked-list/deleting-a-node-in-linked-list.html</td>
+    <td>Doxygen usage manual</td>
+    <td>http://fnch.users.sourceforge.net/doxygen_c.html</td>
 </tr>
 <tr>
     <th scope="row">6</th>
-    <td>Título/Descripción</td>
+    <td>Delete all nodes of LinkedList</td>
+    <td>https://codeforwin.org/2015/09/c-program-to-delete-all-nodes-of-singly-linked-list.html</td>
+</tr>
+<tr>
+    <th scope="row">7</th>
+    <td>Insert at nth position in LinkedList</td>
+    <td>https://www.codingame.com/playgrounds/6991/linked-list-insertion-at-nth-position</td>
+</tr>
+<tr>
+    <th scope="row">8</th>
+    <td> Estructura de Datos - Silvia Cairó & Osvaldo Guardati </td>
+    <td> Libro </td>
+</tr>
+<tr>
+    <th scope="row">9</th>
+    <td>Deleting a node in LinkedList</td>
+    <td>https://www.log2base2.com/data-structures/linked-list/deleting-a-node-in-linked-list.html</td>
+</tr>
+<tr>
+    <th scope="row">10</th>
+    <td>qsort</td>
     <td>https://www.gnu.org/software/libc/manual/html_node/Array-Sort-Function.html</td>
 </tr>
 
 {% endblock %}
+
+{% block endpage_notes %}
+<p style="padding: 5px; background-color: #E1E8F2; border: dotted 2px #00518A;">
+Cuidado al inicializar por primera vez los punteros, haciéndolo p.Ej: LinkedList ll = {NULL, NULL, 0};
+</p>
+{% endblock %}
+
