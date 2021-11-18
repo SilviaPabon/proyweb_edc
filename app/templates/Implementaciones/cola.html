@@ -75,12 +75,12 @@ struct Queue{
 typedef struct Queue Queue;
 
 /**
- * @brief Método para comprobar si la queue está vacía, comprobando si list->head y list->tail apuntan a NULL.
+ * @brief Método para comprobar si la queue está vacía, comprobando si list->head apunta a NULL.
  * @param El puntero a la Queue.
  * @return Valor booleano de 0 o 1 según sea cierto o falso.
  */
 bool isEmpty(Queue *q){
-    return (q->head == NULL && q->tail == NULL);
+    return (q->head == NULL);
 }
 
 /**
@@ -166,7 +166,7 @@ int dequeue(Queue* q){
 
 /**
  * @brief Método para saber si un valor se encuentra contenido dentro de la queue
- * si se encuentra vacía retorna -1 y una impresión indicando que está vacía.
+ * si se encuentra vacía retorna false.
  * @param El puntero a la queue y el valor a buscar
  * @return false si la queue está vacía o no se encuentra el valor, true si lo encuentra (en binario).
  */
