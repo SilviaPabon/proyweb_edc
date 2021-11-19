@@ -1,0 +1,903 @@
+{% extends 'code_layout.html' %}
+
+{% block title %}LISTA DOBLEMENTE CIRCULAR{% endblock %}
+
+{% block titulo_1 %}CÓDIGO DEL NODO:{% endblock %}
+{%block node_code%}
+// --- #include ---
+#include &lt;stdio.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;time.h&gt;
+#include &lt;malloc.h&gt;
+
+/**
+ * @brief Struct del nodo
+ *
+ * La lista doblemente enlazada se compone de nodos, cuyos atrubutos son:
+ *  el dato que almacenan (Límitado a un número/int para este caso) y
+ *  ell puntero a los nodos anterior y siguiente.
+ */
+struct node{
+    int data;   /**< Dato de tipo int almacenado por el nodo */
+    struct node *previous;  /**< Puntero al nodo anterior */
+    struct node *next;      /**< Puntero al siguiente nodo */
+};
+
+// *********************************************+*
+// Simulación de los getters
+// ***********************************************
+
+/**
+ * @brief Una función/método simple para retornar el dato almacenado por un nodo
+ * @param NODE el puntero al nodo del que se quiere obtener el dato
+ * @return El entero almacenado por el nodo
+ */
+int getData(struct node *NODE){
+    return NODE->data;
+}
+
+/**
+ * @brief Una función/método simple para retornar el nodo anterior a un nodo dado
+ * @param NODE el puntero al nodo del que se quiere obtener su anterior
+ * @return El puntero al nodo anterior
+ */
+struct node* getPrevious(struct node *NODE){
+    return NODE->previous;
+}
+
+/**
+ * @brief Una función/método simple para retornar el nodo siguiente a un nodo dado
+ * @param NODE el puntero al nodo del que se quiere obtener su siguiente
+ * @return El puntero al nodo anterior
+ */
+struct node* getNext(struct node *NODE){
+    return NODE->next;
+}
+
+// *********************************************+*
+// Métodos de creación y destrucción
+// ***********************************************
+
+/**
+ * @brief Método para crear un nodo dado el dato que contendrá
+ * @param data el dato que contendrá el nuevo nodo a crear
+ * @return El puntero al nodo creado
+ */
+struct node* createNode(int data){
+    struct node *new_node = malloc(sizeof(struct node));    // Se reserva el espacio de memoria
+    new_node->data = data;  // El dato del nodo será el que se pasó como agumento a la función
+    new_node->previous = NULL;  // Por defecto, el puntero al nodo anterior será nulo
+    new_node->next = NULL;  // Por defecto, el puntero al nodo siguiente será nulo
+    return new_node;
+}
+
+/**
+ * @brief Método para destruir un nodo
+ * @param NODE puntero del nodo a "destruir"
+ * @return void
+ */
+void destroyNode(struct node *NODE){
+    free(NODE);    // Se libera el espacio de memoria que ocupaba el nodo
+}
+
+// *********************************************+*
+// Otros métodos
+// ***********************************************
+
+/**
+ * @brief Método/función para saber si un nodo específico contiene un dato dado
+ * @param NODE puntero del nodo cuyo dato se va a comparar
+ * @param DATA numero a comparar con el dato del nodo
+ * @return Retorna un booleano dependiendo de si el nodo contiene o no el dato
+ */
+bool isEqual(struct node *NODE, int DATA) {
+    return NODE->next == DATA;
+}
+{% endblock %}
+
+{% block titulo_2 %}CÓDIGO DE LA LISTA DOBLEMENTE CIRCULAR{% endblock %}
+{%block structure_code%}
+/**
+ * @brief Struct de la lista doblemente enlazada
+ *
+ * @note Se podría pensar que una lista circular no tiene primer nodo
+ * ni último nodo, debido a que es, en cierto modo, "infinita", pero tener
+ * los punteros "head" y "tail", junto al size, nos ayudará a poner límites
+ * a las iteraciones en algunos casos. Por ejemplo, en la impresión de la lista,
+ * solo nos interesa mostrar una única vez los nodos que componen la lista.
+ */
+
+struct DoubleCircularList{
+    int size; /**< "Tamaño" de la lista */
+    struct node *head; /**< Puntero al "primer" nodo de la lista */
+    struct node *tail; /**< Puntero al "último" nodo de la lista */
+};
+
+// *********************************************+*
+// Simulación de los getters
+// ***********************************************
+
+ /**
+  * @brief Una función/método simple para retornar el tamaño de una lista dada
+  * @param LIST puntero de la lista de la que se quiere obtener su tamaño
+  * @return el "atributo" tamaño de la lista
+  */
+int getSize(struct DoubleCircularList *LIST){
+    return LIST->size;
+}
+
+/**
+ * @brief Una función/método simple para obtener el primer nodo
+ * @param LIST puntero de la lista de la que se quiere obtener su primer nodo
+ * @return el puntero al primer nodo de la lista
+ */
+struct node* getHead(struct DoubleCircularList *LIST){
+    return LIST->head;
+}
+
+/**
+ * @brief Una función/método simple para obtener el último nodo
+ * @param LIST puntero de la lista de la que se quiere obtener su último nodo
+ * @return el puntero al último nodo de la lista
+ */
+struct node* getTail(struct DoubleCircularList *LIST){
+    return LIST->tail;
+}
+
+/**
+ * @brief función/método para saber si la lista está vacía
+ *
+ * Si el nodo cabeza es nulo, la lista está vacía, ya que todas las
+ * conexiones de la lista simplemente enlazada empiezan desde la cabeza.
+ * @param LIST puntero de la lista que se quiere revisar para saber si está vacía
+ * @return booleano que indica si la lista está o no vacía
+ */
+bool isEmpty(struct DoubleCircularList *LIST){
+    return LIST->head == NULL;  // Si la cabeza es nula, retorna true
+}
+
+// *********************************************+*
+// Métodos de inserción
+// ***********************************************
+
+/**
+ * @brief función/método para insertar un dato al final de la lista
+ *
+ * Se revisa si la lista está vacía, en ese caso, se crea el nodo y
+ * se asigna como la cabeza y la cola de la lista.
+ * Si ya hay elementos en la lista, se crean los respectivos enlaces
+ * por medio de los punteros para agregar el nodo al final.
+ *
+ * @param LIST puntero de la lista en la que se quiere insertar el dato
+ * @param data dato que se quiere insertar
+ * @return void
+ */
+void insertTail(struct DoubleCircularList *LIST, int data){
+
+    struct node *new_node = createNode(data);   //Nuevo nodo que contiene el dato pasado como argumento
+
+    if(isEmpty(LIST)){  //Si la lista está vacía
+
+        LIST->head = new_node;
+        LIST->tail = LIST->head;    //Como no hay más datos, la cabeza y cola serán el mismo nodo
+
+        LIST->head->previous = LIST->tail; //El anterior nodo a la cabeza será la cola (circularidad)
+        LIST->tail->next = LIST->head;  //El siguiente a la cola será la cabeza (circularidad)
+
+    }else{  //Si ya hay nodos en la lista
+
+        new_node->previous = LIST->tail;    //El anterior al nuevo nodo será la actual cola
+        LIST->tail->next = new_node;    //El siguiente a la actual cola será el nuevo nodo
+        LIST->tail = new_node;  //El nuevo nodo se convierte en la cola de la lista
+
+        LIST->tail->next = LIST->head;  //El siguiente a la cola será la cabeza (circularidad)
+        LIST->head->previous = LIST->tail; //El anterior nodo a la cabeza será la cola (circularidad)
+
+    }
+
+    LIST->size++;   //Se aumenta el tamaño de la lista
+
+}
+
+/**
+ * @brief función/método para insertar un dato al inicio de la lista
+ *
+ * Se revisa si la lista está vacía, en ese caso, se crea el nodo y
+ * se asigna como la cabeza y cola de la lista.
+ * Si ya hay nodos en la lista, se crean los respectivos enlaces
+ * por medio de los punteros para agregar el nodo al inicio.
+ *
+ * @param LIST puntero de la lista en la que se quiere insertar el dato
+ * @param data dato que se quiere insertar
+ * @return void
+ */
+void insertHead(struct DoubleCircularList *LIST, int data){
+
+    struct node *new_node = createNode(data);   //Nuevo nodo que contiene el dato pasado como argumento
+
+    if(isEmpty(LIST)){  //Si la lista está vacía
+
+        LIST->head = new_node;
+        LIST->tail = LIST->head;    //Como no hay más datos, la cabeza y cola serán el mismo nodo
+
+        LIST->head->previous = LIST->tail; //El anterior nodo a la cabeza será la cola (circularidad)
+        LIST->tail->next = LIST->head;  //El siguiente a la cola será la cabeza (circularidad)
+
+    }else{
+
+        new_node->next = LIST->head;        //El siguiente al nuevo nodo será la actual cabeza
+        LIST->head->previous = new_node;    //El anterior a la actual cabeza será el nuevo nodo
+        LIST->head = new_node;  //El nuevo nodo se convierte en la cabeza de la lista
+
+        LIST->head->previous = LIST->tail; //El anterior nodo a la cabeza será la cola (circularidad)
+        LIST->tail->next = LIST->head;  //El siguiente a la cola será la cabeza (circularidad)
+
+    }
+
+    LIST->size++;   //Se aumenta el tamaño de la lista
+
+}
+
+/**
+ * @brief Método por defecto para insertar un dato a la lista
+ *
+ * El comportamiento por defecto del método es llamar al método
+ * insertTail(), para insertar un dato al final de la lista.
+ * Se crea este método para ofrecer un comportamiento predeterminado
+ * y más corto al usuario.
+ *
+ * @param LIST puntero de la lista en la que se quiere insertar el dato
+ * @param data dato que se quiere insertar
+ */
+void insert(struct DoubleLinkedList *LIST, int data){
+    insertTail(LIST, data);
+}
+
+/**
+ * @brief Método para insertar un dato en una posición específica.
+ *
+ * Si la posición ingresada es 0, se inserta en la cabeza.
+ * Si la posición ingresada es el size de la lista +1, se inserta en la cola.
+ * Si la posición es diferente a las anteriores, se itera la lista "position" veces
+ * para encontrar la posición deseada, y se hacen los cambios en los punteros para
+ * insertar el nodo.
+ *
+ * @param LIST puntero de la lista en la que se quiere insertar el dato
+ * @param data dato que se va a insertar en la lista
+ * @param position posición en la que se quiere insertar el dato
+ * @note El argumento position puede empezar en 0, donde 0 significaría insertar en la
+ * cabeza de la lista.
+ */
+void insertAt(struct DoubleCircularList *LIST, int data, int position){
+    /*
+     * Al ser circular, ahora sí hay diferencia entre la posición 0 y la posición 1:
+     * La posición 0 se entiende como "antes de la cabeza", es decir, la cola.
+     * La posición 1 se entiente como "en la cabeza".
+     */
+    if(position == 0){
+        insertTail(LIST, data);
+    }else if(position == 1){
+        insertHead(LIST, data);
+    }else if(position == LIST->size +1){
+        insertTail(LIST, data);
+    }else{
+
+        struct node *new_node = createNode(data);   //Nodo que contiene el nuevo dato
+        struct node *current = LIST->head;  //Nodo para iterar la lista
+
+        /*
+         * Se itera hasta llegar al nodo de la posición indicada,
+         * en caso de que la posición sea mayor al size de la lista +1,
+         * se usa el módulo para evitar hacer iteraciones de más, de este modo,
+         * por ejemplo, si el size de la lista es 5, y se quiere insertar
+         * el dato en la posición 9, 9mod5 = 4, que sería la posición en la que
+         * finalmente se insertará el nodo.
+         */
+
+        if(position > LIST->size+1){
+            position = position%LIST->size;
+        }
+
+        for(int i=1; i< position; i++){
+            current = current->next;
+        }
+
+        /*
+         * El siguiente al nuevo nodo será el que antes ocupaba la posición
+         * a reemplazar.
+         * El anterior al nodo que se va a reemplazar será el nuevo nodo.
+         * El siguiente al anterior del nodo que se va a reemplazar será el
+         * nuevo nodo.
+         */
+        new_node -> next = current;
+        new_node -> previous = current->previous;
+        current->previous->next = new_node;
+        current -> previous = new_node;
+
+        LIST->size++;
+
+    }
+
+}
+
+
+// *********************************************+*
+// Otros métodos
+// ***********************************************
+
+/**
+ * @brief Método/función para vaciar la lista
+ *
+ * El método se divide en dos partes, la primera consiste en eliminar la
+ * circularidad de la lista (El siguiente después de la cola ya no será la cabeza,
+ * y el anterior a la cabeza ya no será la cola). Esto solo se repite la primera llamada
+ * al método.
+ *
+ * La segunda parte es el mismo funcionamiento que se hacía para anular una lista
+ * no circular:
+ *
+ * Mientras existan más nodos, se elimina la actual cabeza de la lista, se asigna como cabeza
+ * el siguiente nodo y se vuelve a llamar el método. Cuando solo quede un nodo, este se elimina,
+ * el puntero de la cabeza se hace NULL y por último, se asigna 0 al size de la lista.
+ *
+ * @param LIST puntero de la lista que se quiere anular
+ * @return void
+ */
+void clear(struct DoubleCircularList *LIST){
+
+    /*
+     * Si es la primera llamada al método, se rompe la circularidad,
+     * para tratar la lista como una doblemente enlazada no circular.
+     */
+    if(LIST->tail->next != NULL){
+        LIST->tail->next = NULL;
+        LIST->head->previous = NULL;
+    }
+
+    /*
+     * Una vez se rompa la circularidad de la lista, se hace el tratamiento
+     * que se hacía con la lista doblemente enlazada no circular.
+     */
+
+    if(LIST->head->next == NULL){   // Caso base: Ya no hay más nodos siguientes
+        free(LIST->head);   // Se libera el espacio ocupado por el último nodo
+        LIST->head = NULL;
+        LIST->size = 0;
+    }else{  // Llamada recursiva
+
+        struct node *current_node = LIST->head; // Nodo para guardar la cabeza de la lista en cada recursión
+        LIST->head = LIST->head->next;  // Se prepara la lista para la siguiente recursión
+        destroyNode(current_node);  // Se destruye la antigua cabeza de la lista
+        clear(LIST);
+
+    }
+
+}
+
+/**
+ * @brief Método/función para saber si una lista contiene un elemento
+ *
+ * @code
+ * printf("La lista contiene el 0: %d\n", contains(&my_list, 0));
+ * printf("La lista contiene el 3: %d\n", contains(&my_list, 3));
+ * printf("La lista contiene el 2: %d\n", contains(&my_list, 2));
+ * printf("La lista contiene el 4: %d\n", contains(&my_list, 4));
+ * @endcode
+ *
+ * @param LIST puntero de la lista en la que se quiere buscar el elemento
+ * @param this número/dato que se quiere buscar en la lista
+ * @return booleano que indica si el objeto está o no en la lista
+ */
+bool contains(struct DoubleCircularList *LIST, int this){
+
+    if(isEmpty(LIST)){  //Si la lista está vacía
+        printf("La lista está vacía\n");
+    }else{
+
+        bool encontrado = false;    //Variable para retornar si se encontró el objeto
+        struct node *current = LIST->head;   //Nodo para iterar la lista
+
+        /*
+         * El ciclo comprueba los nodos desde la "cabeza" hasta la "cola",
+         * para no entrar en un ciclo infinito. Si se encuentra el dato, se
+         * rompe el ciclo.
+         */
+        for(int i=0; i< LIST->size; i++){
+            if(current->data == this){
+                encontrado = true;
+                break;
+            }
+            current = current->next;
+        }
+
+        return  encontrado;
+
+    }
+
+}
+
+/**
+ * @brief Método para obtener el nodo que contiene un elemento dado
+ *
+ * Se verifica que la lista contenga el elemento mediante el método contains(),
+ * si lo contiene, se empieza a iterar la lista para encontrar y retornar el nodo
+ * que contiene el elemento.
+ *
+ * @param LIST puntero de la lista en la que se quiere buscar el elemento
+ * @param this elemento que se quiere buscar en la lista
+ * @return puntero del nodo que contiene el elemento
+ */
+struct node* search(struct DoubleCircularList *LIST, int this){
+
+    if(contains(LIST, this)){   //Si la lista contiene el elemento
+
+        struct node *current = LIST->head;   //Nodo para iterar la lista
+
+        /*
+         * El ciclo comprueba los nodos desde la "cabeza" hasta la "cola",
+         * para no entrar en un ciclo infinito. Si se encuentra el nodo
+         * que contiene el dato, deja de iterar.
+         */
+        for(int i=0; i< LIST->size; i++){
+            if(current->data == this){
+                break;
+            }
+            current = current->next;
+        }
+
+        return current;
+
+    }else{  //Si no lo contiene
+        printf("La lista no contiene el elemento\n");
+        return NULL;
+    }
+
+}
+
+/**
+ * @brief método/función para eliminar un objeto en la lista
+ *
+ * Se valida que la lista no esté vacía y contenga el elemento,
+ * luego, se itera la lista en busca del elemento, por medio de
+ * nodos auxiliares que permitirán cambiar los punteros para así,
+ * eliminar el nodo de la lista.
+ *
+ * @param LIST puntero de la lista en la que se quiere retornar un elemento
+ * @param this elemento a eliminar
+ * @return booleano que indica si se pudo eliminar con éxito el elemento
+ * @note Se deben evaluar casos especiales al momento de eliminar el nodo (ejm. cabeza y cola).
+ */
+bool remove_element(struct DoubleCircularList *LIST, int this){
+
+    if(contains(LIST, this)){   //Si la lista contiene el elemento
+
+        /*
+         * Nodos para iterar la lista en busca del elemento y cambiar
+         * los enlaces por medio de los punteros.
+         */
+        struct node *previous = NULL;
+        struct node *current = LIST->head;
+        struct node *next = LIST->head->next;
+
+        for(int i=0; i< LIST->size; i++){
+
+            if(current->data == this){  //Cuando se encuentre el nodo
+
+                /*
+                 * Validaciones para saber si el nodo a eliminar es la cabeza,
+                 * la cola, o un nodo intermedio.
+                 */
+                if(current == LIST->head){  //Si es la cabeza
+
+                    /*
+                     * Si el nodo a eliminar es la cabeza de la lista,
+                     * al anterior al siguiente nodo de la cabeza será la cola (circularidad),
+                     * la cabeza será el nodo que estaba después de la cabeza eliminada,
+                     * el siguiente a la cola será la nueva cabeza (circularidad).
+                     */
+                    LIST->head->next->previous = LIST->tail;
+                    LIST->head = LIST->head->next;
+                    LIST->tail->next = LIST->head;
+
+                }else if(current == LIST->tail){    //SI es la cola
+
+                    /*
+                     * Si el nodo a eliminar es la cola de la lista,
+                     * el siguiente al anterior nodo dela cola será la cabeza (circularidad),
+                     * la cola será el nodo que estaba antes de la cola,
+                     * el anterior nodo a la cabeza será la nueva cola (circulardiad).
+                     */
+                    LIST->tail->previous->next = LIST->head;
+                    LIST->tail = LIST->tail->previous;
+                    LIST->head->previous = LIST->tail;
+
+                }else{  //Si es un nodo intermedio
+
+                    /*
+                     * En caso de que sea un nodo diferente a la cabeza y la cola:
+                     * El siguiente al anterior del nodo a eliminar será el siguiente del nodo a eliminar
+                     * A -> Eliminar -> C se pasa a: A -> C
+                     *
+                     * El anterior nodo al siguiente del nodo a eliminar será el anterior del nodo a eliminar
+                     * A <- Eliminar <- C se pasa a: A <- C
+                     */
+                    previous->next = current->next;
+                    next->previous = previous;
+
+                }
+
+                break;  //Luego de elmiminar el nodo, se rompe el ciclo
+
+            }
+
+            //Si aún no se ha encontrado el nodo, se sigue iterando
+            previous = current;
+            current = next;
+            if(next != NULL){
+                next = next->next;
+            }
+
+        }
+
+        destroyNode(current);   //Se libera el espacio del nodo eliminado
+        LIST->size--;   //Se disminuye el tamaño de la lista en 1
+        return true;
+
+    }else{  //Si no contiene el elemento
+        printf("La lista no contiene el elemento\n");
+        return NULL;
+    }
+
+}
+
+/**
+ * @brief función/método para guardar los elementos de la lista en un array.
+ *
+ * Esta opción permite guardar los elementos en un array,
+ * comenzando por el dato de la cabeza y terminando por el dato de la
+ * cola.
+ *
+ * @code
+ * int my_array[my_list.size];
+ * toArrayAhead(&my_list, &my_array);
+ * for(int i=0; i< my_list.size; i++){
+ *      printf("\nEl valor del array en la posición %d , es: %d", i, my_array[i]);
+ * }
+ * @endcode
+ * @param LIST puntero de la lista que se va a convertir en array
+ * @param ARRAY puntero al array en el que se guardarán los datos
+ */
+void toArrayAhead(struct DoubleCircularList *LIST, int* ARRAY){
+
+    int index = 0;  //Contador para insertar los datos en el array
+    struct node *current = LIST->head;  //Nodo para iterar la lista
+
+    for(int i=0; i< LIST->size; i++){
+        ARRAY[index] = current->data;   //Se inserta el dato actual en el array
+        current = current->next;    // Se cambia el nodo actual
+        index++;    //Se aumenta el contador para insertar en la siguiente posición del array
+    }
+
+}
+
+/**
+ * @brief función/método para guardar los elementos de la lista en un array.
+ *
+ * Esta opción permite guardar los elementos en un array,
+ * comenzando por el dato de la cola y terminando por el dato de la
+ * cabeza.
+ *
+ * @code
+ * int my_array[my_list.size];
+ * toArrayBackward(&my_list, &my_array);
+ * for(int i=0; i< my_list.size; i++){
+ *      printf("\nEl valor del array en la posición %d , es: %d", i, my_array[i]);
+ * }
+ * @endcode
+ *
+ * @param LIST puntero de la lista que se va a convertir en array
+ * @param ARRAY puntero al array en el que se guardarán los datos
+ */
+
+void toArrayBackward(struct DoubleCircularList *LIST, int *ARRAY){
+
+    int index = 0;  //Contador para insertar los datos en el array
+    struct node *current = LIST->tail;  //Nodo para iterar la lista
+
+    for(int i=0; i< LIST->size; i++){
+        ARRAY[index] = current->data;   //Se inserta el dato actual en el array
+        current = current->previous;    // Se cambia el nodo actual
+        index++;    //Se aumenta el contador para insertar en la siguiente posición del array
+    }
+
+}
+
+/**
+ * @brief Método para ordenar una lista simplemente enlazada (de menor a mayor).
+ *
+ * Primero se verifica que la lista no esté vacía, una vez se cumpla esta condición, se
+ * guarda el size original de la lista (ya que a continuación se va a vaciar), luego, se
+ * guardan los datos de la lista en un array, mediante el método toArray() implementado
+ * anteriormente. Finalmente, se itera el array y para cada elemento se va buscando su
+ * posición (Cuando se encuentre un número mayor, se inserta antes que este, y de no encontrar
+ * número mayor, se inserta en al final).
+ *
+ * @param LIST Puntero de la lista simplemente enlazada que se va a añadir
+ */
+void sort(struct DoubleCircularList *LIST){
+
+    if(isEmpty(LIST)){  //Si la lista está vacía
+        printf("No se puede ordenar una lista vacía");
+    }else{
+
+        int *copia; //Copia del size original para el ciclo for
+        copia = LIST->size;
+
+        int array[LIST->size];  //Array para guardar los datos de la lista original
+        toArrayAhead(LIST, &array);
+
+        clear(LIST);    //Se vacía la lista original
+
+        for(int i=0; i< copia; i++){ //Se iteran los elementos del array
+
+            if(isEmpty(LIST)){  //En la primera ejecución, se inserta el dato en la cabeza
+                insert(LIST, array[i]);
+            }else{
+                /*
+                 * Una vez insertado el primer dato, se compara el valor del array
+                 * con todos los nodos de la lista hasta encontrar uno mayor (para insertarlo
+                 * antes de ese dato).
+                 */
+
+                struct node *current = LIST->head;  //Nodo para iterar la lista
+                int posicion = 1;   //Posición para saber dónde hay que insertar el dato
+                bool insertado = false; //Booleano para saber si se encontró algún mayor
+
+                /*
+                 * A diferencia de las otras listas, donde se iteraba con un while,
+                 * en este caso es necesario usar un for, ya que en el while la condición
+                 * de parada era que current = NULL, pero en este caso eso nunca va a pasar,
+                 * ya que todos los nodos tienen un siguiente.
+                 */
+                for(int j=0; j< LIST->size; j++){
+
+                    if(array[i] < current->data){
+                        /*
+                         * Cuando se encuentre un dato mayor, el nuevo dato
+                         * se inserta antes.
+                         */
+                        insertAt(LIST, array[i], posicion);
+                        insertado = true;
+                        break;
+                    }
+
+                    //Si no se ha encontrado la posición, se sigue iterando.
+                    posicion++;
+                    current = current->next;
+
+                }
+
+                /*
+                 * Si se acabó el for y no se insertó, significa que no hay
+                 * ningún número mayor en la lista, por lo cual, se inserta al final.
+                 */
+                if(insertado == false){
+                    insertTail(LIST, array[i]);
+                }
+            }
+
+        }
+
+    }
+
+}
+
+// *********************************************+*
+// Métodos para imprimir la lista
+// ***********************************************
+
+/**
+ * @brief Función/método para imprimir la lista desde la cabeza hasta la cola
+ *
+ * A diferencia de los métodos de impresión de las listas no circulares,
+ * en este caso es necesario implementar una situación que detenga la iteración
+ * de la lista. Anteriormente, se detenía la iteración cuando el siguiente nodo fuera
+ * NULL, ya que eso nos indicaba que se había llegado al "tail" de la lista, pero en
+ * este caso, el puntero "next" nunca será NULL, ya que todos los nodos tienen un
+ * anterior y un siguiente.
+ *
+ * En este caso, se decidió que la situación de parada es cuando el siguiente nodo
+ * al nodo actual sea igual al "head" de la lista.
+ *
+ * @param LIST puntero de la lista que se quiere imprimir por consola
+ * @note El nodo que se pasa a esta función normalmente es el head de la lista.
+ */
+void listToString_ahead(struct DoubleCircularList *LIST){
+
+    if(isEmpty(LIST)){  //Si la lista está vacía
+        printf("La lista está vacía\n");
+    }else{
+
+        struct node *current = LIST->head;  //Nodo para iterar la lista
+
+        /*
+         * Se itera mientras que existan más nodos a la derecha, aunque
+         * esta condición, en teoría, siempre será cierta, ya que todos los
+         * nodos en una lista circular tienen un nodo anterior y un nodo
+         * siguiente, por lo cual, dentro del ciclo hay que crear otra situación
+         * de parada.
+         */
+        while(current != NULL){
+
+            if(current->next != LIST->head){
+                /*
+                 * Si el siguiente nodo es diferente a la cabeza de la lista,
+                 * se sigue iterando.
+                 */
+                printf("ListNode: Data:%d, Next->\n", current->data);
+                current = current->next;
+            }else{
+                /*
+                 * Si el siguiente nodo es la cabeza de la lista, es porque se ha
+                 * llegado al nodo final, por tanto, se detiene el ciclo.
+                 */
+                printf("ListNode: Data:%d, Next->HEAD (END)\n", current->data);
+                break;
+            }
+
+        }
+
+    }
+
+}
+
+/**
+ * @brief Función/método para imprimir la lista desde la cola hasta la cabeza
+ *
+ * A diferencia de los métodos de impresión de las listas no circulares,
+ * en este caso es necesario implementar una situación que detenga la interación
+ * de la lista. Anteriormente, se detenía la iteración cuando el anterior nodo fuera
+ * NULL, ya que esto nos indicaba que se había llegado al "head" de la listam pero en
+ * este caso, el puntero "previous" nunca será NULL, ya que todos los nodos tienen un
+ * anterior y un siguiente.
+ *
+ * @param LIST puntero de la lista que se quiere imprimir por consola
+ * @note El nodo que se pasa a esta función normalmente es el tail de la lista.
+ */
+void listToString_backward(struct DoubleCircularList *LIST){
+
+    if(isEmpty(LIST)){  //Si la lista está vacía
+        printf("La lista está vacía\n");
+    }else{  //Si ya hay elementos dentro de la lista
+
+        struct node *current = LIST->tail;  //Nodo para iterar la lista
+
+        /*
+         * Se itera mientras que existan más nodos a la izquierda, aunque
+         * esta condición, en teoría, siemrpe será cierta, ya que todos los
+         * nodos de una lista circular tienen un nodo anterior y un nodo siguiente,
+         * por lo cual, dentro del ciclo hay que crear otra situación de parada.
+         */
+        while(current != NULL){
+
+            if(current->previous != LIST->tail){
+                /*
+                 * Si el nodo anterior es diferente a la cola de la lista,
+                 * se sigue iterando
+                 */
+                printf("ListNode: Data:%d, Next:->\n", current->data);
+                current = current->previous;
+            }else{
+                /*
+                 * Si el nodo anterior es la cola de la lista, es porque se ha llegado
+                 * al nodo inicial, por tanto, se detiene el ciclo.
+                 */
+                printf("ListNode: Data:%d, Next:->TAIL (END)", current->data);
+                break;
+            }
+
+        }
+
+    }
+
+}
+
+/**
+ * @brief Método para iterar la lista un número dado de veces
+ *
+ * Gracias a la circularidad de la lista, es posible iterar dentro de
+ * la lista una cantidad de veces mayor al size de la misma, ya que al
+ * llegar a la cola, pasaría nuevamente a la cabeza, y el ciclo se repetiría.
+ *
+ * @param LIST puntero de la lista que se quiere iterar
+ * @param times cantidad de veces que se quiere iterar la lista
+ */
+void iterate(struct DoubleCircularList *LIST, int times){
+
+    if(isEmpty(LIST)){  //Si la la lista está vacía
+        printf("La lista está vacía\n");
+    }else{
+
+        struct node *current = LIST->head;  //Nodo para iterar la lista
+
+        /*
+         * For que se repite la cantidad de veces que el
+         * parámetro "times" indique.
+         */
+        for(int i=0; i< times; i++){
+            printf("El dato en la vuelta %d es: %d\n", i+1, current->data);
+            current = current->next;
+        }
+
+    }
+
+}
+
+/**
+ * @brief Método/función para seleccionar un dato de la lista aleatoriamente
+ *
+ * Este método genera un número random entre 0 y el size de la lista multiplicado por 4,
+ * a partir de ese número, itera la lista y finalmente, retorna el dato del nodo seleccionado
+ * en la última iteración. (Como una ruleta).
+ *
+ * @param LIST puntero de la lista a partir de la cual se quiere seleccionar un número random
+ * @return El número/dato de la lista seleccionado aleatoriamente.
+ * @warning Es necesario importar las librerías <stdlib.h> y <time.h>
+ */
+int selectRandom(struct DoubleCircularList *LIST){
+
+    /*
+     * Se genera un número random entre 1 y el size de la lista multiplicado
+     * por cuatro. (Este número será la cantidad de iteraciones que se hará en la lista).
+     */
+    int length = LIST->size;
+
+    srand(time(NULL));
+    int num_iteraciones = rand() % (length*4 - 1);
+
+    /*
+     * Se itera la lista.
+     */
+    struct node *current = LIST->head;
+
+    for(int i=1; i< num_iteraciones; i++){
+        current = current->next;
+    }
+
+    /*
+     * Se retorna el dato que contiene el nodo que se iteró
+     * luego de terminar las iteraciones.
+     */
+    return current->data;
+
+}
+{% endblock %}
+
+{% block table_content %}
+<tr>
+    <th scope="row">1</th>
+    <td>Doxygen usage manual</td>
+    <td>http://fnch.users.sourceforge.net/doxygen_c.html</td>
+</tr>
+<tr>
+    <th scope="row">2</th>
+    <td>Complete guide on Using Doxygen to document C Source code</td>
+    <td>https://embeddedinventor.com/guide-to-configure-doxygen-to-document-c-source-code-for-beginners/l</td>
+</tr>
+<tr>
+    <th scope="row">3</th>
+    <td>Definición listas circulares</td>
+    <td>https://es.ccm.net/faq/2972-las-listas-circulares</td>
+</tr>
+<tr>
+    <th scope="row">4</th>
+    <td>Ruleta con la lista circular: </td>
+    <td>https://programmerclick.com/article/47921160603/</td>
+</tr>
+<tr>
+    <th scope="row">5</th>
+    <td>Generar números aleatorios en C</td>
+    <td>https://youtu.be/Y_CYGJDRU2c</td>
+</tr>
+{% endblock %}

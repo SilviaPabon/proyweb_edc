@@ -1,0 +1,103 @@
+/*"NAVBAR"*/
+.header {
+  background: linear-gradient(to left, #7b0090, #6ba0ff);
+}
+
+.header_text {
+  text-decoration: none;
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: x-large;
+}
+
+.header_text:hover {
+  text-decoration: none;
+  color: white;
+}
+
+/*CONTENEDOR DE LA PRESENTACIÓN*/
+.header_container {
+  padding: 50px;
+  background: url("../img/img_container.png");
+  background-size: cover;
+}
+
+.inside_container {
+  border-radius: 12px;
+  text-align: center;
+  background: rgb(255,255,255, 90%);
+  padding: 20px;
+}
+
+.jumbotron{
+  margin:0px; /*SE QUITA EL MARGEN POR DEFECTO DEL JUMBOTRON PARA QUE NO AFECTEN LOS MÁRGENES DEL CONTENEDOR PRINCIPAL*/
+}
+
+.inside_container h1{
+  margin: 0px;
+}
+
+.prueba {
+  margin: 14px 14px;
+}
+
+/*TARJETAS DE LAS IMPLEMENTACIONES*/
+.cards_container {
+  margin-top: 14px;
+}
+
+implementaciones_card {
+  border: none;
+}
+
+.card {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: none;
+  margin: 0px 22px;
+  background-color: rgb(242,242,242);
+  transition: all 0.2s ease;
+}
+
+.btn_card {
+  background: #6ba0ff;
+  border: #6ba0ff;
+  transition: all 0.6s ease;
+}
+
+.btn_card:hover {
+  background: #7b0090;
+  border: #7b0090;
+}
+
+.card img {
+  filter: blur(1.5px);
+  transition: filter 0.6s ease;
+}
+
+.card img:hover {
+  filter: blur(0px);
+}
+
+.card:hover {
+  background-color: rgb(226,226,226);
+  transform: translateY(-1%);
+}
+
+.card-group.cards_group {
+  margin-top: 22px;
+  margin-bottom: 22px;
+}
+
+.implementacion_container {
+  margin-top: 12px;
+}
+

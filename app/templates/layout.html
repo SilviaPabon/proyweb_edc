@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="shortcut icon" href="{{url_for('static', filename='img/favicon.ico')}}">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md header">
+        <div class="container-fluid"><a class="header_text mx-auto" href="{{url_for('index')}}">estructuras de datos en c</a></div>
+    </nav>
+    {% block content %}{% endblock %} 
+    <script src="{{url_for('static', filename='scripts/jquery.min.js')}}"></script>
+    <script src="{{url_for('static', filename='scripts/bootstrap.min.js')}}"></script>
+</body>
+
+</html>

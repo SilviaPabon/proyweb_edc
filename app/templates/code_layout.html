@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/syntax/atom-one-dark-reasonable.min.css')}}">
+
+<div class="container">
+    <br>
+    <center><h1>{% block titulo_1 %}{% endblock %}</h1></center><hr>
+    <pre><code class="c">
+{%block node_code%}{% endblock %}
+    </code></pre><br>
+
+    <center><h1>{% block titulo_2 %}{% endblock %}</h1></center><hr>
+    <pre><code class="c">
+{%block structure_code%}{% endblock %}
+    </code></pre><br>
+
+    <!--TABLA DE LAS FUENTES CONSULTADAS-->
+    <h4>FUENTES CONSULTADAS / ÚTILES:</h4>
+    <table class="table table-light table-hover table-striped .table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Enlace</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% block table_content %}{% endblock %}
+        </tbody>
+    </table>
+
+    {%block endpage_notes%}{% endblock %}
+
+</div>
+
+<script src="{{url_for('static', filename='scripts/syntax/c.min.js')}}"></script>
+<script src="{{url_for('static', filename='scripts/syntax/highlight.js')}}"></script>
+<script src="{{url_for('static', filename='scripts/syntax/highlight.min.js')}}"></script>
+<script>hljs.highlightAll();</script>
+{% endblock %}
+
