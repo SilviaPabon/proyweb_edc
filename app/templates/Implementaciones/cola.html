@@ -4,13 +4,38 @@
 
 {% block titulo_1 %}CÓDIGO DEL NODO:{% endblock %}
 {%block node_code%}
+// --- #include ---
+#include &lt;stdio.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stdlib.h&gt;
+
 // --- ESTRUCTURA DEL NODO ---
+
+/**
+ * @brief Struct del nodo.
+ * Hacer la queue de manera dinámica requiere una LinkedList:
+ * La lista simplemente enlazada se compone de nodos, cuyos atributos son:
+ * -El dato que almacenan (Límitado a un número/int para este caso), info,
+ * -El puntero al nodo siguiente, next
+ * Se utiliza "typedef struct Node node;" para evitar el uso constante de struct Node nombreNodo
+ * limitándolo al nombre que se defina allí.
+ */
 struct Node{
     int info;
     struct Node *next;
 };
 typedef struct Node node;
 
+// *********************************
+// Método de creación de nodo
+// *********************************
+
+/**
+ * @brief Método para crear un nodo dado el dato que contendrá.
+ * @param n el dato entero que contendrá el nuevo nodo a crear.
+ * @return El puntero al nodo creado.
+ */
 node *createNode(int n){
     node *new_node = malloc(sizeof(node));
     new_node->info = n;
@@ -18,15 +43,30 @@ node *createNode(int n){
     return new_node;
 }
 
+/**
+ * @brief Método para obtener la información que contiene el nodo.
+ * @param El puntero al nodo.
+ * @return El entero contenido dentro del nodo.
+ */
 int getInfo(node *node){
     return node->info;
-} 
+}
 {% endblock %}
 
 {% block titulo_2 %}CÓDIGO DE LA COLA - QUEUE{% endblock %}
 {%block structure_code%}
 // --- ESTRUCTURA DE LA QUEUE ---
 
+/**
+ * @brief Struct de la queue.
+ *
+ * Una vez implementado lo relacionado la estructura del nodo
+ * se procede a implementar la estructura de la queue
+ * junto con sus métodos/funciones. La cual básicamente contiene 2 apuntadores head y tail.
+ * Es la misma estructura base para una LinkedList (porque es una Queue dinámica)
+ * Se utiliza "typedef struct Queue Queue;" para evitar el uso constante de struct Queue nombreQueue
+ * limitándolo al nombre que se defina allí.
+ */
 struct Queue{
     node *head;
     node *tail;
@@ -34,10 +74,21 @@ struct Queue{
 };
 typedef struct Queue Queue;
 
+/**
+ * @brief Método para comprobar si la queue está vacía, comprobando si list->head apunta a NULL.
+ * @param El puntero a la Queue.
+ * @return Valor booleano de 0 o 1 según sea cierto o falso.
+ */
 bool isEmpty(Queue *q){
-    return (q->head == NULL && q->tail == NULL);
+    return (q->head == NULL);
 }
 
+/**
+ * @brief Método para obtener la cabeza de la queue, funciona como un getter
+ * si se encuentra vacía retorna -1 y una impresión indicando que está vacía.
+ * @param El puntero a la queue.
+ * @return Valor entero que se encuentre en la head o cabeza.
+ */
 int getHead(Queue *q){
     if (isEmpty(q)){
         printf("Empty, head isn't exist\n");
@@ -46,6 +97,12 @@ int getHead(Queue *q){
     return q->head->info;
 }
 
+/**
+ * @brief Método para obtener la cola de la queue, funciona como un getter
+ * si se encuentra vacía retorna -1 y una impresión indicando que está vacía.
+ * @param El puntero a la queue.
+ * @return Valor entero que se encuentre en la tail o cola.
+ */
 int getTail(Queue *q){
     if (isEmpty(q)){
         printf("Empty, tail isn't exist\n");
@@ -54,6 +111,11 @@ int getTail(Queue *q){
     return q->tail->info;
 }
 
+/**
+ * @brief Método para obtener el tamaño de la queue, funciona como un getter
+ * @param El puntero a la queue.
+ * @return Valor entero que representa el tamaño de la queue.
+ */
 int getSize(Queue *q) {
     if (q == NULL) {
         return 0;
@@ -62,9 +124,14 @@ int getSize(Queue *q) {
     }
 }
 
+/**
+ * @brief Método para encolar los nodos en la queue
+ * @param El puntero a la queue y el valor a encolar
+ * @return true si se encola correctamente (binario).
+ */
 void enqueue(Queue* q, int val){
     node* newNode = createNode(val);
-    if (isEmpty(q)){
+    if (isEmpty(q)){ //comprueba si la queue está vacia, siendo así el primer nodo a encolar
         q->head = newNode;
         q->tail = newNode;
     } else {
@@ -74,23 +141,35 @@ void enqueue(Queue* q, int val){
     q->size++;
 }
 
+/**
+ * @brief Método para desencolar los nodos en la queue
+ * como se encolan por la cola, dequeue desencola por la cabeza
+ * @param El puntero a la queue
+ * @return el valor que se encontraba en la head o cabeza.
+ */
 int dequeue(Queue* q){
-    if(isEmpty(q)){
+    if(isEmpty(q)){  //comprueba si la queue está vacia, no hace nada
         printf("Nothing to dequeue\n");
         return false;
     }else{
         node* tmp = q->head;
         int aux = q->head->info;
-        q->head = q->head->next;
-        if(q->head == NULL){
+        q->head = q->head->next; // la nueva cabeza es el ste nodo a la cabeza anterior
+        if(q->head == NULL){ //comprueba si es el último nodo que resta en la queue
             q->tail = NULL;
         }
-        free(tmp);
-        q->size--;
-        return aux;
+        free(tmp); // libera espacio en memoria
+        q->size--; // disminuye tamaño de la queue
+        return aux; // retorna el valor que se encontraba allí
     }
 }
 
+/**
+ * @brief Método para saber si un valor se encuentra contenido dentro de la queue
+ * si se encuentra vacía retorna false.
+ * @param El puntero a la queue y el valor a buscar
+ * @return false si la queue está vacía o no se encuentra el valor, true si lo encuentra (en binario).
+ */
 bool contains(Queue *q, int val){
     if(isEmpty(q)){
         return false;
@@ -108,6 +187,18 @@ bool contains(Queue *q, int val){
     }
 }
 
+/**
+ * @brief Método para buscar un nodo con x valor contenido dentro de la queue
+ * la diferencia con contains es que este método retorna un nodo o un valor NULL
+ * Información importante:
+ * En un caso como el siguiente:
+ *   node* node1 = search(&q, 12); si el valor 12 no está contenido
+ *   printf("Contains? %s\n", node1); se debe poner %s en el printf, e imprimirá correctamnte (null)
+ *   esto para probar el nodo nulo.
+ *   Si está contenido, con %d, al node1->info, bastaría
+ * @param El puntero a la queue y el valor a buscar
+ * @return si encuentra el valor, retorna un nodo de tipo puntero, de lo contrario, NULL.
+ */
 node* search(Queue *list, int val){
     node* aux = {NULL};
     if (contains(list, val)){
@@ -125,6 +216,11 @@ node* search(Queue *list, int val){
     }
 }
 
+/**
+ * @brief Método para limpiar toda la queue, liberando el espacio de memoria de cada nodo
+ * @param El puntero a la queue
+ * @return true si se limpia o borra toda correctamente (binario).
+ */
 bool clear(Queue *q){
 
     if(isEmpty(q)){
@@ -138,12 +234,17 @@ bool clear(Queue *q){
     }
 }
 
+/**
+ * @brief Método para convertir la queue en un array
+ * @param El puntero a la queue y un array de enteros que se va a llenar
+ * @return true si se hace la conversión (binario).
+ */
 bool toArray(Queue* q, int array[]){
     if(isEmpty(q)){
         return false;
     }else {
         int index = 0;  // Contador para insertar los datos en el array
-        node *actual = q->head;   // Nodo para iterar la lista
+        node *actual = q->head;   // Nodo para iterar la queue
 
         while (actual != NULL) {
             array[index] = actual->info;   // Se insertar el dato actual en el array
@@ -154,6 +255,14 @@ bool toArray(Queue* q, int array[]){
     }
 }
 
+/**
+ * @brief Método para invertir la queue 15->16->17->NULL 17->16->15->NULL
+ * Lo que hace este método es valerse del método toArray como auxiliar, para convertir la queue
+ * en un array, luego limpiar la queue (su espacio en memoria) con clear y ya luego, encolar en la queue
+ * por la head o cabeza, los números albergados en el array, utilizando un for invertido.
+ * @param El puntero a la queue
+ * @return Retorna la queue invertida.
+ */
 Queue reverse(Queue* q){
     if(isEmpty(q)){
         printf("Empty Queue\n");
@@ -168,12 +277,34 @@ Queue reverse(Queue* q){
         return *q;
     }
 }
-//Es un apuntador void para que sea de cualquier tipo
-//su retorno es 0 si son iguales
+
+/**
+ * @brief Método para comparar 2 números o datos
+ * Complemento para la función qsort()
+ * @param 2 apuntadores void (este método se puede reutilizar para comparar otro tipo de datos)
+ * @return 0 si son iguales.
+ */
 int comparison(const void * a, const void * b) {
     return ( *(int*)a - *(int*)b );
 }
 
+/**
+* @brief Método para ordenar la queue.
+* Complemento para la función qsort().
+* Este método al igual que el anterior utiliza toArray como método auxiliar
+* El array se convierte en uno de los parámetros de la función qsort
+* Luego se limpia el espacio de memoria de la queue
+* y finalmente se recorre el array ordenado y se va encolando cada número de nuevo en la queue
+* @param la queue que se va a ordenar.
+* @return la queue ordenada.
+*/
+/**
+* @brief Método qsort, librería que utiliza quicksort para ordenar un array
+* Complemento para la función sort
+* @param apuntador al array, número de elementos en el array, el tamaño de los elementos en el array
+ * en este caso enteros, llamada a la función que va a comparar a los 2 elementos
+* @return retorna un array ordenado.
+*/
 Queue sort(Queue* q){
     if(isEmpty(q)){
         printf("Empty Queue\n");
@@ -189,7 +320,11 @@ Queue sort(Queue* q){
         return *q;
     }
 }
-//son más de apoyo
+
+/**
+* @brief Método complementario a printQueue, imprime la info de cada nodo
+* @param apuntador a un nodo
+*/
 void displayQueue(node *n)
 {
     node *tmp = n;
@@ -200,22 +335,70 @@ void displayQueue(node *n)
     }
 }
 
+/**
+* @brief Método para imprimir la queue
+* utiliza como complemento a displayQueue
+* @param apuntador a la queue
+*/
 void printQueue(Queue *list){
     if(isEmpty(list)){
         printf("Empty List\n");
     }else{
         displayQueue(list->head);
     }
-} 
+}
 {% endblock %}
 
 {% block table_content %}
-<!-- TEMPLATE PARA AGREGAR UNA FILA A LA TABLA: -->
-<!--
 <tr>
     <th scope="row">1</th>
-    <td>Título/Descripción</td>
-    <td>Enlace</td>
+    <td>Punteros en C:</td>
+    <td>https://www.hackerrank.com/challenges/pointer-in-c/problem</td>
 </tr>
--->
+<tr>
+    <th scope="row">2</th>
+    <td>Structs en C:</td>
+    <td>https://youtu.be/CoW5NyFyGb4</td>
+</tr>
+<tr>
+    <th scope="row">3</th>
+    <td>Guía de implementación lista simplemente enlazada en C</td>
+    <td>https://youtu.be/NPmwuR4VbKk</td>
+</tr>
+<tr>
+    <th scope="row">4</th>
+    <td>Memoria dinámica en C: Malloc y Free</td>
+    <td>http://labsopa.dis.ulpgc.es/fso/cpp/intro_c/introc75.htm</td>
+</tr>
+<tr>
+    <th scope="row">5</th>
+    <td>Doxygen usage manual</td>
+    <td>http://fnch.users.sourceforge.net/doxygen_c.html</td>
+</tr>
+<tr>
+    <th scope="row">6</th>
+    <td>Delete all nodes of LinkedList</td>
+    <td>https://codeforwin.org/2015/09/c-program-to-delete-all-nodes-of-singly-linked-list.html</td>
+</tr>
+<tr>
+    <th scope="row">7</th>
+    <td> Estructura de Datos - Silvia Cairó & Osvaldo Guardati </td>
+    <td> Libro </td>
+</tr>
+<tr>
+    <th scope="row">8</th>
+    <td>qsort</td>
+    <td>https://www.gnu.org/software/libc/manual/html_node/Array-Sort-Function.html</td>
+</tr>
+<tr>
+    <th scope="row">9</th>
+    <td>Queue using LinkedList</td>
+    <td>https://www.log2base2.com/data-structures/queue/queue-using-linked-list.html</td>
+</tr>
+{% endblock %}
+
+{% block endpage_notes %}
+<p style="padding: 5px; background-color: #E1E8F2; border: dotted 2px #00518A;">
+Cuidado al inicializar por primera vez los punteros, haciéndolo p.Ej: Queue ll = {NULL, NULL, 0};
+</p>
 {% endblock %}
